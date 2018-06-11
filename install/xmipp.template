@@ -1,0 +1,23 @@
+# -*- conf -*-
+
+[BUILD]
+# C++ variables
+CC = gcc
+CXX = g++
+LINKERFORPROGRAMS = g++
+INCDIRFLAGS = -I/usr/lib/include
+LIBDIRFLAGS = -L/usr/lib
+CCFLAGS = -std=c99
+CXXFLAGS =  -std=c++11
+LINKFLAGS = 
+
+# Java variables
+JAVA_HOME = /usr/lib64/jvm/java-1.7.0-openjdk-1.7.0
+JAVA_BINDIR = %(JAVA_HOME)s/bin
+JAVAC = %(JAVA_BINDIR)s/javac
+JAR = %(JAVA_BINDIR)s/jar
+JNI_CPPPATH = %(JAVA_HOME)s/include:%(JAVA_HOME)s/include/linux
+
+# Modules to compile
+DEBUG = False
+
