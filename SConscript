@@ -90,7 +90,7 @@ addLib('XmippJNI',
        dirs=['bindings'],
        patterns=['java/*.cpp'],
        incs=[env['JNI_CPPPATH'],"%s/xmippCore"%XMIPP_BUNDLE,"%s/xmipp/libraries"%XMIPP_BUNDLE],
-       libs=['pthread', 'XmippCore','XmippRecons'],
+       libs=['pthread', 'XmippCore','Xmipp'],
        libpath=["%s/xmippCore/lib"%XMIPP_BUNDLE,"%s/xmipp/lib"%XMIPP_BUNDLE])
 
 

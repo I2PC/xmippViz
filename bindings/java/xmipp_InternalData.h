@@ -3,7 +3,7 @@
 #include <jni.h>
 #include <core/xmipp_image.h>
 #include <core/xmipp_image_generic.h>
-#include <core/ctf.h>
+#include <data/ctf.h>
 
 #define IDFIELD "peer"
 

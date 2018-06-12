@@ -6,9 +6,9 @@
 #include "xmipp_ExceptionsHandler.h"
 #include <core/xmipp_image_generic.h>
 #include <core/xmipp_fft.h>
-#include <core/ctf.h>
-#include <core/transform_downsample.h>
-#include <core/filters.h>
+#include <data/ctf.h>
+#include <data/transform_downsample.h>
+#include <data/filters.h>
 #include <core/geometry.h>
 
 JNIEXPORT void JNICALL

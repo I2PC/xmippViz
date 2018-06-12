@@ -8,7 +8,7 @@
 #include "xmipp_java_adapter.h"
 #include <jni.h>
 #include "xmipp_TiltPairAligner.h"
-#include <core/micrograph.h>
+#include <data/micrograph.h>
 #include "xmipp_ExceptionsHandler.h"
 #include "xmipp_InternalData.h"
 #include <iostream>

@@ -5,8 +5,8 @@
 #include "xmipp_ExceptionsHandler.h"
 #include "xmipp_InternalData.h"
 #include <core/xmipp_image.h>
-#include <core/projection.h>
-#include <core/filters.h>
+#include <data/projection.h>
+#include <data/filters.h>
 #include <core/geometry.h>
 /*
 JNIEXPORT void JNICALL Java_xmipp_jni_Projection_projectVolume
