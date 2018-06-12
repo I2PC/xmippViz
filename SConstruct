@@ -96,8 +96,8 @@ else:
 
 
 # Python and SCons versions are fixed
-env.EnsurePythonVersion(2,7)
-env.EnsureSConsVersion(2,3,2)
+#env.EnsurePythonVersion(2,7)
+#env.EnsureSConsVersion(2,3,2)
 # TODO: see after all is clean and crispy if we can avoid fixing the versions.
 # We can specify a range of valid version after we check it works with them.
 
@@ -118,45 +118,6 @@ def appendUnique(elist, element):
             elist.append(element)
 
 
-def CheckMPI(context, mpi_inc, mpi_libpath, mpi_lib, mpi_cc, mpi_cxx, mpi_link, replace):
-    context.Message('* Checking for MPI ... ')
-
-    lastLIBS = context.env.get('LIBS', '')
-    lastLIBPATH = context.env['LIBPATH']
-    lastCPPPATH = context.env['CPPPATH']
-    lastCC = context.env['CC']
-    lastCXX = context.env['CXX']
-
-    # TODO Replace() also here?
-    context.env.Append(LIBS=mpi_lib, LIBPATH=mpi_libpath,
-                       CPPPATH=mpi_inc)
-    context.env.Replace(LINK=mpi_link)
-    context.env.Replace(CC=mpi_cc, CXX=mpi_cxx)
-
-    # Test only C++ mpi compiler
-    ret = context.TryLink('''
-    #include <mpi.h>
-    int main(int argc, char** argv)
-    {
-        MPI_Init(0, 0);
-        MPI_Finalize();
-        return 0;
-    }
-    ''', '.cpp')
-
-    # NOTE: We don't want MPI flags for not-mpi programs (always revert)
-    # env['mpi'] remains 1 so those can be enabled again when needed
-    if not replace:
-        context.env.Replace(LIBS=lastLIBS)
-        context.env.Replace(LIBPATH=lastLIBPATH)
-        context.env.Replace(CPPPATH=lastCPPPATH)
-        context.env.Replace(CC=lastCC)
-        context.env.Replace(CXX=lastCXX)
-
-    context.Result(ret)
-    return ret
-
-
 #  ************************************************************************
 #  *                                                                      *
 #  *                            Extra options                             *
@@ -174,7 +135,6 @@ if not 'BUILD' in cf.sections():
     print("Cannot find section BUILD in install/xmipp.conf")
 os.environ.update(dict(cf.items('BUILD')))
 
-env['SCIPION_HOME'] = os.environ['SCIPION_HOME']
 
 env['CPPPATH'] = os.environ.get('CPPPATH', [])
 env['CC'] = os.environ.get('CC')
@@ -192,24 +152,12 @@ os.environ['CXXFLAGS'] = cxxFlags # FIXME use only env or os.environ in the rest
 env['LINKFLAGS'] = os.environ.get('LINKFLAGS', '').split()
 
 
-for path in ['MPI_LIBDIR', 'MPI_INCLUDE', 'MPI_BINDIR',
-             'JAVA_HOME', 'JAVA_BINDIR']:
+for path in ['JAVA_HOME', 'JAVA_BINDIR']:
     if not os.path.isdir(os.environ.get(path, '')):
         Exit('Path to $%s (%s) should exist, but it does not. Stopping.\n'
              'Please run "scipion config"' % (path, os.environ.get(path, '')))
 
-env['MPI_CC'] = os.environ.get('MPI_CC')
-env['MPI_CXX'] = os.environ.get('MPI_CXX')
-env['MPI_LINKERFORPROGRAMS'] = os.environ.get('MPI_LINKERFORPROGRAMS')
-env['MPI_LIB'] = os.environ.get('MPI_LIB')
-env['MPI_LIBDIR'] = os.environ['MPI_LIBDIR']
-env['MPI_INCLUDE'] = os.environ['MPI_INCLUDE']
-env['MPI_BINDIR'] = os.environ['MPI_BINDIR']
-env['MATLAB_DIR'] = os.environ.get('MATLAB_DIR')
-env['NVCC'] = os.environ.get('NVCC')
-env['NVCC_INCLUDE'] = os.environ.get('NVCC_INCLUDE')
-env['NVCC_LIBDIR'] = os.environ.get('NVCC_LIBDIR')
-env['CUDA_LIB'] = os.environ.get('CUDA_LIB')
+env['XMIPP_BUNDLE'] = os.environ.get('XMIPP_BUNDLE')
 
 # Java related environment variables, probably the main one
 # that need to be modified is JAVA_HOME
@@ -219,9 +167,6 @@ env['JAVAC'] = os.environ.get('JAVAC')
 env['JAR'] = os.environ.get('JAR')
 env['JNI_CPPPATH'] = os.environ.get('JNI_CPPPATH').split(':')
 
-
-AddOption('--with-all-packages', dest='withAllPackages', action='store_true',
-          help='Get all EM packages')
 
 xmippPath = Dir('.').abspath
 env['PACKAGE'] = {'NAME': 'xmipp',
@@ -235,30 +180,6 @@ env['PACKAGE'] = {'NAME': 'xmipp',
 #  *                                                                      *
 #  ************************************************************************
 
-# We have several "Pseudo-Builders" http://www.scons.org/doc/HTML/scons-user/ch20.html
-#
-# They are:
-#   addCppLibrary - install a EM package library
-#   addJavaLibrary    - install a java jar
-#   addProgram        - install a EM package program
-#
-# Their structure is similar:
-#   * Define reasonable defaults
-#   * Set --with-<name> option as appropriate
-#   * Concatenate builders
-#
-# For the last step we concatenate the builders this way:
-#   target1 = Builder1(env, target1, source1)
-#   SideEffect('dummy', target1)
-#   target2 = Builder2(env, target2, source2=target1)
-#   SideEffect('dummy', target2)
-#   ...
-#
-# So each target becomes the source of the next builder, and the
-# dependency is solved. Also, we use SideEffect('dummy', ...) to
-# ensure it works in a parallel build (see
-# http://www.scons.org/wiki/SConsMethods/SideEffect), and does not try
-# to do one step while the previous one is still running in the background.
 def remove_prefix(text, prefix):
     return text[text.startswith(prefix) and len(prefix):]
 
@@ -356,92 +277,6 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
     SideEffect('dummy', library)
     env.Depends(library, sources)
     
-    if installDir:
-        install = env.Install(installDir, library)
-        SideEffect('dummy', install)
-        lastTarget = install
-    else:
-        lastTarget = library
-    env.Default(lastTarget)
-
-    for dep in deps:
-        env.Depends(sources, dep)
-
-    env.Alias(name, lastTarget)
-
-    return lastTarget
-
-def addCppLibraryCuda(env, name, dirs=[], tars=[], untarTargets=['configure'], patterns=[], incs=[],
-                  libs=[], prefix=None, suffix=None, installDir=None, libpath=['lib'], deps=[],
-                  mpi=False, cuda=False, default=True, target=None):
-    """Add self-made and compiled shared library to the compilation process
-
-    This pseudobuilder access given directory, compiles it
-    and installs it. It also tells SCons about it dependencies.
-
-    If default=False, the library will not be built unless the option
-    --with-<name> is used.
-
-    Returns the final targets, the ones that Make will create.
-    """
-    _libs = list(libs)
-    _libpath = list(libpath)+external_libdirs
-    _incs = list(incs)+external_incdirs
-    lastTarget = deps
-    prefix = 'lib' if prefix is None else prefix
-    suffix = '.so' if suffix is None else suffix
-
-    basedir = 'lib'
-    targetName = join(basedir, target if target else prefix + name)
-    sources = []
-
-    for d, p in izip(dirs, patterns):
-        sources += glob(join(env['PACKAGE']['SCONSCRIPT'], d, p))
-
-    if not sources and env.TargetInBuild(name):
-        Exit('No sources found for Library: %s. Exiting!!!' % name)
-
-    # FIXME: There must be a key in env dictionary that breaks the compilation. Please find it to make it more beautiful
-    env2 = Environment()
-    env2['ENV']['PATH'] = env['ENV']['PATH']
-
-    mpiArgs = {}
-    if mpi:
-        _libpath.append(env['MPI_LIBDIR'])
-        _libs.append(env['MPI_LIB'])
-        _incs.append(env['MPI_INCLUDE'])
-
-        mpiArgs = {'CC': env['MPI_CC'],
-                   'CXX': env['MPI_CXX'],
-                   'LINK': env['MPI_LINKERFORPROGRAMS']}
-        env2.PrependENVPath('PATH', env['MPI_BINDIR'])
-
-    # AJ
-    elif cuda:
-        _libs.append(['cudart', 'cublas', 'cufft', 'curand', 'cusparse', 'nvToolsExt'])
-        _incs.append(env['NVCC_INCLUDE'])
-        _libpath.append(env['NVCC_LIBDIR'])
-        mpiArgs = {'CC': env['NVCC'], 'CXX': env['NVCC'], 'LINK': env['LINKERFORPROGRAMS']}
-    # FIN AJ
-
-
-    _incs.append(env['CPPPATH'])
-
-    library = env2.Library(
-        target=targetName,
-        # source=lastTarget,
-        source=sources,
-        CPPPATH=_incs,
-        LIBPATH=_libpath,
-        LIBS=_libs,
-        SHLIBPREFIX=prefix,
-        SHLIBSUFFIX=suffix,
-        CXXFLAGS=env['CXXFLAGS'],
-        LINKFLAGS=env['LINKFLAGS'],
-        **mpiArgs)
-    SideEffect('dummy', library)
-    env.Depends(library, sources)
-
     if installDir:
         install = env.Install(installDir, library)
         SideEffect('dummy', install)
@@ -597,84 +432,6 @@ def addJavaTest(env, name, source, installDir=None, default=True):
     return runTest
 
 
-def addProgram(env, name, src=None, pattern=None, installDir=None, 
-               libPaths=[], incs=[], libs=[], cxxflags=[], linkflags=[], 
-               deps=[], mpi=False, cuda=False, nvcc=False, default=True):
-    """Add, compile and install a program to the compilation process
-    
-    This pseudobuilder compiles a C++ program using CXX compiler and linker.
-    
-    This is designed to compile the different parts of a EM software
-
-    If default=False, the program will not be compiled unless the 
-    --with-<program-name> is used.
-
-    Returns the final targets, the ones that Command returns.
-    
-    """
-    if not default and not GetOption(name):
-        AddOption('--with-%s' % name, dest=name, action='store_true',
-                  help='Add the program %s to the compilation' % name)
-        return ''
-    src = src or ['src']
-    pattern = pattern or ['*.cpp']
-    installDir = installDir or 'bin'
-    libs = libs or []
-    libPathsCopy = libPaths + [Dir('lib').abspath]
-    incsCopy = list(incs) or []
-    if cuda or nvcc:
-        libs += ['cudart', 'cublas', 'cufft', 'curand', 'cusparse', 'nvToolsExt']
-        incsCopy += [env['NVCC_INCLUDE']]
-        libPathsCopy += [env['NVCC_LIBDIR']]
-    sources = []
-    for s, p in izip(src, pattern):
-        sources += glob(join(s, p))
-
-    if mpi: ccCopy = env['MPI_CC']
-    elif nvcc: ccCopy = env['NVCC']
-    else: ccCopy = env['CC']
-
-    if mpi: cxxCopy = env['MPI_CXX']
-    elif nvcc: cxxCopy = env['NVCC']
-    else: cxxCopy = env['CXX']
-
-    linkCopy = env['MPI_LINKERFORPROGRAMS'] if mpi else env['LINKERFORPROGRAMS']
-    incsCopy += env['CPPPATH']+external_incdirs
-    libsCopy = libs
-    cxxflagsCopy = cxxflags + env['CXXFLAGS']
-    linkflagsCopy = linkflags + env['LINKFLAGS']
-    ldLibraryPathCopy = [env['LIBPATH']]
-    appendUnique(libPathsCopy, env.get('LIBPATH', '').split(os.pathsep))
-    appendUnique(libPathsCopy, external_libdirs)
-    env2 = Environment()
-    if mpi: 
-        appendUnique(incsCopy, env['MPI_INCLUDE'])
-        appendUnique(libPathsCopy, env['MPI_LIBDIR'])
-        appendUnique(libsCopy, env['MPI_LIB'])
-        appendUnique(ldLibraryPathCopy, env['MPI_LIBDIR'])
-    env2['ENV']['LD_LIBRARY_PATH'] = env['ENV'].get('LD_LIBRARY_PATH', '')
-    env2['ENV']['PATH'] = env['ENV']['PATH']
-
-    program = env2.Program(
-                          File(join(installDir, name)).abspath,
-                          source=sources,
-                          CC=ccCopy,
-                          CXX=cxxCopy,
-                          CPPPATH=incsCopy,
-                          LIBPATH=libPathsCopy,
-                          LIBS=libsCopy,
-                          CXXFLAGS=cxxflagsCopy,
-                          LINKFLAGS=linkflagsCopy,
-                          LINK=linkCopy,
-                          LD_LIBRARY_PATH=ldLibraryPathCopy
-                          )
-    env2.Default(program)
-    
-    env2.Depends(program, deps)
-    
-    return program
-
-
 def compilerConfig(env):
     """Check the good state of the C and C++ compilers and return the proper env."""
 
@@ -723,11 +480,9 @@ def libraryTest(env, name, lang='c'):
 env.AddMethod(untar, 'Untar')
 env.AddMethod(compilerConfig, 'CompilerConfig')
 env.AddMethod(addCppLibrary, 'AddCppLibrary')
-env.AddMethod(addCppLibraryCuda, 'AddCppLibraryCuda')
 env.AddMethod(addJavaLibrary, 'AddJavaLibrary')
 env.AddMethod(symLink, 'SymLink')
 env.AddMethod(addJavaTest, 'AddJavaTest')
-env.AddMethod(addProgram, 'AddProgram')
 env.AddMethod(targetInBuild, 'TargetInBuild')
 
 # Run SConscript

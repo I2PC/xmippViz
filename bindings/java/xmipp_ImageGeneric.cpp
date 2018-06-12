@@ -4,12 +4,12 @@
 #include "xmipp_ImageGeneric.h"
 #include "xmipp_InternalData.h"
 #include "xmipp_ExceptionsHandler.h"
-#include "data/xmipp_image_generic.h"
-#include "data/xmipp_fft.h"
-#include "data/ctf.h"
-#include "data/transform_downsample.h"
-#include "data/filters.h"
-#include "data/geometry.h"
+#include <core/xmipp_image_generic.h>
+#include <core/xmipp_fft.h>
+#include <core/ctf.h>
+#include <core/transform_downsample.h>
+#include <core/filters.h>
+#include <core/geometry.h>
 
 JNIEXPORT void JNICALL
 Java_xmipp_jni_ImageGeneric_create(JNIEnv *env, jobject jobj)

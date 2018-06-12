@@ -1,8 +1,8 @@
 #ifndef XMIPP_EXCEPTIONS_HANDLER
 #define XMIPP_EXCEPTIONS_HANDLER
 #include <jni.h>
-#include "data/xmipp_error.h"
-#include "data/xmipp_strings.h"
+#include <core/xmipp_error.h>
+#include <core/xmipp_strings.h>
 
 void handleXmippException(JNIEnv *env, std::string message);
 

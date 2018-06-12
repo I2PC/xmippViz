@@ -1,9 +1,9 @@
 #ifndef XMIPP_INTERNAL_DATA
 #define XMIPP_INTERNAL_DATA
 #include <jni.h>
-#include <data/xmipp_image.h>
-#include <data/xmipp_image_generic.h>
-#include <data/ctf.h>
+#include <core/xmipp_image.h>
+#include <core/xmipp_image_generic.h>
+#include <core/ctf.h>
 
 #define IDFIELD "peer"
 

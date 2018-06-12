@@ -4,10 +4,10 @@
 #include "xmipp_ImageGeneric.h"
 #include "xmipp_ExceptionsHandler.h"
 #include "xmipp_InternalData.h"
-#include <data/xmipp_image.h>
-#include <data/projection.h>
-#include <data/filters.h>
-#include <data/geometry.h>
+#include <core/xmipp_image.h>
+#include <core/projection.h>
+#include <core/filters.h>
+#include <core/geometry.h>
 /*
 JNIEXPORT void JNICALL Java_xmipp_jni_Projection_projectVolume
 (JNIEnv *env, jclass class_, jobject jvolume, jobject jprojection, jdouble rot, jdouble tilt, jdouble psi)

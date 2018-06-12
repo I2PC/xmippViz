@@ -3,7 +3,7 @@
 #include <jni.h>
 #include "xmipp_Program.h"
 #include "xmipp_ExceptionsHandler.h"
-#include <data/xmipp_filename.h>
+#include <core/xmipp_filename.h>
 #include <reconstruction/program_extension.h>
 
 JNIEXPORT jint JNICALL Java_xmipp_jni_Program_runByName

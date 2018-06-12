@@ -3,7 +3,7 @@
 #include <iostream>
 #include "xmipp_Filename.h"
 #include "xmipp_ExceptionsHandler.h"
-#include "data/xmipp_filename.h"
+#include <core/xmipp_filename.h>
 
 
 JNIEXPORT jboolean JNICALL Java_xmipp_jni_Filename_hasStackExtension

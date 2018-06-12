@@ -4,7 +4,7 @@
 #include "xmipp_ExceptionsHandler.h"
 #include "reconstruction/micrograph_automatic_picking2.h"
 #include "xmipp_InternalData.h"
-#include <data/metadata.h>
+#include <core/metadata.h>
 
 JNIEXPORT void JNICALL
 Java_xmipp_jni_PickingClassifier_create(JNIEnv *env, jobject jobj, jint particle_size, jstring output, jobjectArray jmics)

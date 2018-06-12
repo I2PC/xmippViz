@@ -5,12 +5,12 @@
 #include "xmipp_InternalData.h"
 #include "xmipp_ExceptionsHandler.h"
 
-#include <data/metadata.h>
-#include <data/metadata_label.h>
-#include <data/metadata_sql.h>
-#include <data/metadata_extension.h>
-#include <data/xmipp_program_sql.h>
-#include <classification/analyze_cluster.h>
+#include <core/metadata.h>
+#include <core/metadata_label.h>
+#include <core/metadata_sql.h>
+#include <core/metadata_extension.h>
+#include <core/xmipp_program_sql.h>
+//*** COSS #include <classification/analyze_cluster.h>
 
 int debug = 0;
 /*
@@ -841,7 +841,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_writeMdToStack
 }
 
 
-
+/* *** COSS
 JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_getPCAbasis
 (JNIEnv *env, jobject jmetadata, jobject jbasis, jint label)
 {
@@ -869,6 +869,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_getPCAbasis
     }
     XMIPP_JAVA_CATCH;
 }
+*/
 
 JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_computeFourierStatistics
 (JNIEnv *env, jobject jobj, jobject jmetadata, jint label)
