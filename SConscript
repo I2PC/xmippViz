@@ -176,7 +176,6 @@ javaBuild = Execute(Mkdir(epath('java/build')))
 # Update enums in java files from C++ headers. If they don't exist, generate them.
 log = open(fpath('java/build/javaLog'), 'w+')
 for class_name, class_list in javaEnumDict.iteritems():
-    print("Aqui",class_list[0])
     WriteJavaEnum(class_name, class_list[0], class_list[1], log)
 
 javaExtractCommand = env.Command(
