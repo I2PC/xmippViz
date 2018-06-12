@@ -157,8 +157,6 @@ for path in ['JAVA_HOME', 'JAVA_BINDIR']:
         Exit('Path to $%s (%s) should exist, but it does not. Stopping.\n'
              'Please run "scipion config"' % (path, os.environ.get(path, '')))
 
-env['XMIPP_BUNDLE'] = os.environ.get('XMIPP_BUNDLE')
-
 # Java related environment variables, probably the main one
 # that need to be modified is JAVA_HOME
 env['JAVA_HOME'] = os.environ['JAVA_HOME']

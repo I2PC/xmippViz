@@ -50,6 +50,7 @@ MACOSX = env['PLATFORM'] == 'darwin'
 MINGW = env['PLATFORM'] == 'win32'
 
 XMIPP_PATH = Dir('.').abspath
+XMIPP_BUNDLE = Dir('..').abspath
 
 
 #  ***********************************************************************
@@ -88,9 +89,9 @@ def addLib(name, **kwargs):
 addLib('XmippJNI',
        dirs=['bindings'],
        patterns=['java/*.cpp'],
-       incs=[env['JNI_CPPPATH'],"%s/xmippCore"%env['XMIPP_BUNDLE'],"%s/xmipp/libraries"%env['XMIPP_BUNDLE']],
+       incs=[env['JNI_CPPPATH'],"%s/xmippCore"%XMIPP_BUNDLE,"%s/xmipp/libraries"%XMIPP_BUNDLE],
        libs=['pthread', 'XmippCore','XmippRecons'],
-       libpath=["%s/xmippCore/lib"%env['XMIPP_BUNDLE'],"%s/xmipp/lib"%env['XMIPP_BUNDLE']])
+       libpath=["%s/xmippCore/lib"%XMIPP_BUNDLE,"%s/xmipp/lib"%XMIPP_BUNDLE])
 
 
 #  ***********************************************************************
@@ -103,10 +104,10 @@ dpath = lambda path: Dir('%s' % path).abspath
 epath = lambda path: Entry('%s' % path).abspath
 
 javaEnumDict = {
-    'ImageWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h'%env['XMIPP_BUNDLE']), 'WRITE_'],
-    'CastWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h'%env['XMIPP_BUNDLE']), 'CW_'],
-    'MDLabel': [fpath('%s/xmippCore/core/metadata_label.h'%env['XMIPP_BUNDLE']), ['MDL_', 'RLN_', 'BSOFT']],
-    'XmippError': [fpath('%s/xmippCore/core/xmipp_error.h'%env['XMIPP_BUNDLE']), 'ERR_']}
+    'ImageWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE), 'WRITE_'],
+    'CastWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE), 'CW_'],
+    'MDLabel': [fpath('%s/xmippCore/core/metadata_label.h'%XMIPP_BUNDLE), ['MDL_', 'RLN_', 'BSOFT']],
+    'XmippError': [fpath('%s/xmippCore/core/xmipp_error.h'%XMIPP_BUNDLE), 'ERR_']}
 
 
 def WriteJavaEnum(class_name, header_file, pattern, log):
@@ -180,8 +181,8 @@ for class_name, class_list in javaEnumDict.iteritems():
 
 javaExtractCommand = env.Command(
     epath('libraries/bindings/java/src/xmipp/jni/enums.changelog'),
-    [fpath('%s/xmippCore/core/xmipp_image_base.h'%env['XMIPP_BUNDLE']),
-     fpath('%s/xmippCore/core/metadata_label.h'%env['XMIPP_BUNDLE'])],
+    [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE),
+     fpath('%s/xmippCore/core/metadata_label.h'%XMIPP_BUNDLE)],
     ExtractEnumFromHeader)
 
 javaEnums = env.Alias('javaEnums', javaExtractCommand)
