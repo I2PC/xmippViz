@@ -180,7 +180,7 @@ for class_name, class_list in javaEnumDict.iteritems():
     WriteJavaEnum(class_name, class_list[0], class_list[1], log)
 
 javaExtractCommand = env.Command(
-    epath('libraries/bindings/java/src/xmipp/jni/enums.changelog'),
+    epath('bindings/java/src/xmipp/jni/enums.changelog'),
     [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE),
      fpath('%s/xmippCore/core/metadata_label.h'%XMIPP_BUNDLE)],
     ExtractEnumFromHeader)
