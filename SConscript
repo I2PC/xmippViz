@@ -273,7 +273,6 @@ def addBatch(batchName, script, scriptFolder='applications/scripts'):
 
 addBatch('metadata_plot', 'metadata_plot/batch_metadata_plot.py')
 addBatch('showj', 'showj/batch_showj.py')
-addBatch('tomoj', 'tomoj/batch_tomoj.py')
 
 XmippAlias = env.Alias('xmipp', ['xmipp-libs',
                                  'xmipp-java'])
