@@ -5,8 +5,8 @@
 CC = gcc
 CXX = g++
 LINKERFORPROGRAMS = g++
-INCDIRFLAGS = -I/usr/lib/include -I$SCIPION_HOME/software/include
-LIBDIRFLAGS = -L/usr/lib -L$SCIPION_HOME/software/lib
+INCDIRFLAGS = -I$SCIPION_HOME/software/include
+LIBDIRFLAGS = -L$SCIPION_HOME/software/lib
 CCFLAGS = -std=c99
 CXXFLAGS =  -std=c++11
 LINKFLAGS = 
