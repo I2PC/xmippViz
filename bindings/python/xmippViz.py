@@ -1,4 +1,4 @@
-from xmipp import XmippScript
+from xmipp3 import XmippScript
 
 class ScriptIJBase(XmippScript):
     def __init__(self, name):
