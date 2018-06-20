@@ -1,5 +1,4 @@
-from __future__ import print_function
-from xmipp3 import XmippScript
+from xmipp import XmippScript
 
 class ScriptIJBase(XmippScript):
     def __init__(self, name):
