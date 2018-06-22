@@ -1,4 +1,6 @@
-from xmipp import XmippScript
+import os
+import platform
+from xmipp import XmippScript, xmippExists, getXmippPath
 
 class ScriptIJBase(XmippScript):
     def __init__(self, name):
@@ -88,9 +90,9 @@ def getJavaIJappCmd(memory, appName, args, batchMode=False):
     if len(memory) == 0:
         memory = "2g"
         print ("No memory size provided. Using default: " + memory)
-    imagej_home = getXmippPath("external", "imagej")
+    imagej_home = getXmippPath("bindings", "java", "imagej")
     lib = getXmippPath("lib")
-    javaLib = getXmippPath('java', 'lib')
+    javaLib = getXmippPath('bindings', 'java', 'lib')
     plugins_dir = os.path.join(imagej_home, "plugins")
     arch = getArchitecture()
     cmd = "java -Xmx%(memory)s -d%(arch)s -Djava.library.path=%(lib)s -Dplugins.dir=%(plugins_dir)s -cp %(imagej_home)s/*:%(javaLib)s/* %(appName)s %(args)s" % locals()
