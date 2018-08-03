@@ -231,7 +231,7 @@ env2.Default(javaExtraFileTypes)
 # -d flag the class name, producing a folder with the same name as the
 # class and putting the class file inside
 fileTypesInstallation = env.Install(
-    dpath('external/imagej/plugins/'),
+    dpath('external/imagej/plugins/Input-Output/'),
     epath('java/build/HandleExtraFileTypes.class/HandleExtraFileTypes.class'))
 #env.Depends(fileTypesInstallation, pluginLink)
 env.Default(fileTypesInstallation)

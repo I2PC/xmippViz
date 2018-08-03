@@ -77,14 +77,6 @@ def getImageJPluginCmd(memory, macro, args, batchMode=False):
 def runImageJPlugin(memory, macro, args, batchMode=False):
     os.system(getImageJPluginCmd(memory, macro, args, batchMode))
 
-
-def getArchitecture():
-    arch = platform.architecture()[0]
-    for a in ['32', '64']:
-        if a in arch:
-            return a
-    return 'NO_ARCH' 
-    
 def getJavaIJappCmd(memory, appName, args, batchMode=False):
     '''Launch an Java application based on ImageJ '''
     if len(memory) == 0:
@@ -94,8 +86,7 @@ def getJavaIJappCmd(memory, appName, args, batchMode=False):
     lib = getXmippPath("lib")
     javaLib = getXmippPath('bindings', 'java', 'lib')
     plugins_dir = os.path.join(imagej_home, "plugins")
-    arch = getArchitecture()
-    cmd = "java -Xmx%(memory)s -d%(arch)s -Djava.library.path=%(lib)s -Dplugins.dir=%(plugins_dir)s -cp %(imagej_home)s/*:%(javaLib)s/* %(appName)s %(args)s" % locals()
+    cmd = "java -Xmx%(memory)s -Djava.library.path=%(lib)s -Dplugins.dir=%(plugins_dir)s -cp %(imagej_home)s/*:%(javaLib)s/* %(appName)s %(args)s" % locals()
     if batchMode:
         cmd += " &"
     return cmd

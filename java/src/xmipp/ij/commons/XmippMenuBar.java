@@ -28,7 +28,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,8 +171,8 @@ public class XmippMenuBar extends MenuBar
 			}
 		});
 		filemn.add(volviewermi);
-//		addIJMenuItem(filemn, "Open with Volume Viewer/3D Slicer", "Volume Viewer", IJRequirement.VOLUME);
-//		addIJMenuItem(filemn, "Open with VolumeJ", "VolumeJ ", IJRequirement.VOLUME);
+//		addIJCheckMenuItem(filemn, "Open with Volume Viewer/3D Slicer", "Volume Viewer", IJRequirement.VOLUME);
+//		addIJCheckMenuItem(filemn, "Open with VolumeJ", "VolumeJ ", IJRequirement.VOLUME);
 		refreshmi = new MenuItem("Refresh");
 		refreshmi.setEnabled(iploader.allowsPoll());
 		refreshmi.setShortcut(new MenuShortcut(KeyEvent.VK_F5));
@@ -250,7 +249,7 @@ public class XmippMenuBar extends MenuBar
 
 //		filemn.add(savemi);
 		filemn.add(saveasmi);
-//		addIJMenuItem(filemn, "Duplicate", "Duplicate...", IJRequirement.IMAGEJ);
+//		addIJCheckMenuItem(filemn, "Duplicate", "Duplicate...", IJRequirement.IMAGEJ);
 		filemn.add(refreshmi);
 		filemn.add(pollmi);
 		filemn.add(ugmi);
@@ -269,32 +268,32 @@ public class XmippMenuBar extends MenuBar
 		
 
 		// image info menu
-//		addIJMenuItem(infomn, "Show Info", "Show Info...");
-//		addIJMenuItem(infomn, "Properties", "Properties...");
-//		addIJMenuItem(infomn, "Histogram", "Histogram", IJRequirement.IMAGEJ);
-//		addIJMenuItem(infomn, "Plot Profile", "Plot Profile", IJRequirement.IMAGEJ);
+//		addIJCheckMenuItem(infomn, "Show Info", "Show Info...");
+//		addIJCheckMenuItem(infomn, "Properties", "Properties...");
+//		addIJCheckMenuItem(infomn, "Histogram", "Histogram", IJRequirement.IMAGEJ);
+//		addIJCheckMenuItem(infomn, "Plot Profile", "Plot Profile", IJRequirement.IMAGEJ);
 
 		// image adjust menu
 
-//		addIJMenuItem(adjustmn, "Crop", "Crop", IJRequirement.IMAGEJ);
-//		addIJMenuItem(adjustmn, "Scale", "Scale...");
-//		addIJMenuItem(adjustmn, "Untilt Stack", "Untilt Stack", IJRequirement.STACK);
+//		addIJCheckMenuItem(adjustmn, "Crop", "Crop", IJRequirement.IMAGEJ);
+//		addIJCheckMenuItem(adjustmn, "Scale", "Scale...");
+//		addIJCheckMenuItem(adjustmn, "Untilt Stack", "Untilt Stack", IJRequirement.STACK);
 
-//		addIJMenuItem(adjustmn, "Reslice", "Reslice [/]...", IJRequirement.VOLUME);
+//		addIJCheckMenuItem(adjustmn, "Reslice", "Reslice [/]...", IJRequirement.VOLUME);
 
 		// image transform menu
 		
-//		addIJMenuItem(transformmn, "Rotate 90 Degrees Left", "Rotate 90 Degrees Left");
-//		addIJMenuItem(transformmn, "Rotate 90 Degrees Right", "Rotate 90 Degrees Right");
+//		addIJCheckMenuItem(transformmn, "Rotate 90 Degrees Left", "Rotate 90 Degrees Left");
+//		addIJCheckMenuItem(transformmn, "Rotate 90 Degrees Right", "Rotate 90 Degrees Right");
 
 		// image filters menu
-		CheckboxMenuItem gbmi = addIJMenuItem(imagemn, XmippImageJ.gaussianBlurFilter);
-		addIJMenuItem(imagemn, XmippImageJ.bandPassFilter);
-//		addIJMenuItem(imagemn, XmippImageJ.anisotropicDiffFilter, IJRequirement.EIGHTBIT);
-		CheckboxMenuItem ecmi = addIJMenuItem(imagemn, XmippImageJ.enhanceContrastFilter);
-		addIJMenuItem(imagemn, XmippImageJ.brightnessContrastFilter);
-		addIJMenuItem(imagemn, XmippImageJ.invertLUTFilter);
-		addIJMenuItem(imagemn, XmippImageJ.substractBackgroundFilter);
+		CheckboxMenuItem gbmi = addIJCheckMenuItem(imagemn, XmippImageJ.gaussianBlurFilter);
+		addIJCheckMenuItem(imagemn, XmippImageJ.bandPassFilter);
+//		addIJCheckMenuItem(imagemn, XmippImageJ.anisotropicDiffFilter, IJRequirement.EIGHTBIT);
+		CheckboxMenuItem ecmi = addIJCheckMenuItem(imagemn, XmippImageJ.enhanceContrastFilter);
+		addIJCheckMenuItem(imagemn, XmippImageJ.brightnessContrastFilter);
+		addIJCheckMenuItem(imagemn, XmippImageJ.invertLUTFilter);
+		addIJCheckMenuItem(imagemn, XmippImageJ.substractBackgroundFilter);
 		// menubar advanced menu
 		imagejmi = new MenuItem("ImageJ");
 		imagejmi.setShortcut(new MenuShortcut(KeyEvent.VK_I));
@@ -311,7 +310,7 @@ public class XmippMenuBar extends MenuBar
 		advancedmn.add(processmn);
 		advancedmn.add(drawmn);
 		advancedmn.add(profilemn);
-//		addIJMenuItem(advancedmn, "Masks Tool Bar", "Masks Tool Bar", IJRequirement.IMAGEJ);// missing
+//		addIJCheckMenuItem(advancedmn, "Masks Tool Bar", "Masks Tool Bar", IJRequirement.IMAGEJ);// missing
 		// plugin
 		onlinemi = new MenuItem("Online Help");
 		onlinemi.addActionListener(new ActionListener()
@@ -322,7 +321,7 @@ public class XmippMenuBar extends MenuBar
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				XmippWindowUtil.openURI("https://github.com/biocompwebs/scipion/wiki/ShowJ");
+				XmippWindowUtil.openURI("https://github.com/I2PC/scipion/wiki/ShowJ");
 			}
 		});
 		helpmn.add(onlinemi);
@@ -390,11 +389,9 @@ public class XmippMenuBar extends MenuBar
 		addIJMenuItem(drawmn, "Concenctric Circles", "Concentric Circles");
 
 		// advanced profile menu
-		addIJMenuItem(profilemn, "Line Analyzer", "Line Analyzer", IJRequirement.IMAGEJ);
+		addIJMenuItem(profilemn, "Line Analyzer", "Plot Profile", IJRequirement.IMAGEJ);
 		addIJMenuItem(profilemn, "Oval Profile Plot", "Oval Profile", IJRequirement.IMAGEJ);
-		addIJMenuItem(profilemn, "Radial Profile Plot Angle", "Radial Profile Angle", IJRequirement.IMAGEJ);
-		addIJMenuItem(profilemn, "Radial Profile Plot Height", "Radial Profile Height", IJRequirement.IMAGEJ);
-		addIJMenuItem(profilemn, "Contour Plotter", "ContourPlotter ");
+//		addIJMenuItem(profilemn, "Contour Plotter", "ContourPlotter ");
 
 		imagejmi.addActionListener(new ActionListener()
 		{
@@ -543,19 +540,20 @@ public class XmippMenuBar extends MenuBar
 		}
 	}
 	
-	protected CheckboxMenuItem addIJMenuItem(Menu mn, String command, IJRequirement... requirements)
+	protected CheckboxMenuItem addIJCheckMenuItem(Menu mn, String command, IJRequirement... requirements)
 	{
-		return addIJMenuItem(mn, command, command, requirements);
+		return addIJCheckMenuItem(mn, command, command, requirements);
 
 	}
 
-	protected CheckboxMenuItem addIJMenuItem(Menu mn, String name, String command, IJRequirement... requirements)
+	protected CheckboxMenuItem addIJCheckMenuItem(Menu mn, String name, String command, IJRequirement... requirements)
 	{
 		CheckboxMenuItem mi = new CheckboxMenuItem(name);
-		addCommand(mi, command, requirements);
+		addCheckCommand(mi, command, requirements);
 		mn.add(mi);
 		return mi;
 	}
+
 
 	protected void poll()
 	{
@@ -564,7 +562,7 @@ public class XmippMenuBar extends MenuBar
 			polltimer.start();
 	}
 
-	protected void addCommand(CheckboxMenuItem mi, String command, final IJRequirement... requirements)
+	protected void addCheckCommand(CheckboxMenuItem mi, String command, final IJRequirement... requirements)
 	{
 		mi.setActionCommand(command);
 		for (IJRequirement requirement : requirements)
@@ -606,8 +604,48 @@ public class XmippMenuBar extends MenuBar
 			}
 		});
 	}//function addCommand
-	
-	public void applyFilters()
+
+    protected MenuItem addIJMenuItem(Menu mn, String name, String command, IJRequirement... requirements)
+    {
+        MenuItem mi = new MenuItem(name);
+        addCommand(mi, command, requirements);
+        mn.add(mi);
+        return mi;
+    }
+
+
+    protected void addCommand(MenuItem mi, String command, final IJRequirement... requirements)
+    {
+        mi.setActionCommand(command);
+        for (IJRequirement requirement : requirements)
+        {
+            if (requirement == IJRequirement.STACK && !xw.isStack())
+                mi.setEnabled(false);
+            if (requirement == IJRequirement.VOLUME && !xw.isVolume())
+                mi.setEnabled(false);
+        }
+        mi.addActionListener(new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+
+                try
+                {
+                    MenuItem mi = (MenuItem) e.getSource();
+                    String command = mi.getActionCommand();
+                    runCommand(command, requirements);
+
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }//function addCommand
+
+    public void applyFilters()
 	{
 		ImagePlus imp = xw.getImagePlusLoader().getImagePlus();
 		for(IJCommand filter: filters)
