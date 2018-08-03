@@ -23,6 +23,7 @@
 
 #### Java
 *.class
+*MDLabel.java
 
 #### Python
 *.pyc
@@ -33,6 +34,7 @@
 .pydevproject
 .classpath
 .idea
+*.iml
 
 # Scons auxiliary files
 .sconsign.dblite
