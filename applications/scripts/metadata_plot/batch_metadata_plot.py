@@ -27,7 +27,7 @@
 """
 
 import os
-from pyworkflow.em.packages.xmipp3 import XmippScript
+from xmipp3 import XmippScript
 
 
 class ScriptPlotMetadata(XmippScript):

@@ -1,6 +1,6 @@
 import os
 import platform
-from xmipp import XmippScript, xmippExists, getXmippPath
+from xmipp_base import XmippScript, xmippExists, getXmippPath
 
 class ScriptIJBase(XmippScript):
     def __init__(self, name):
