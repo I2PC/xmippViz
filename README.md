@@ -1,1 +1,22 @@
 # xmippViz
+
+
+**>>> To install Xmipp, please visit [this](https://github.com/I2PC/xmipp#xmipp) <<<**
+
+However, if you still want to install **only** the XmippViz software, follow:
+
+```
+mkdir <xmipp-bundle>  # if it doesn't exist yet
+cd <xmipp-bundle>
+wget https://raw.githubusercontent.com/I2PC/xmipp/master/xmipp -O xmipp
+chmod 755 xmipp
+./xmipp --help
+mkdir src
+cd src
+git clone https://github.com/I2PC/xmippViz/
+cd - 
+./xmipp config                # Configure compilation variables
+./xmipp check_config:         # Check that the configuration is correct
+./xmipp compile N xmippViz:  # Compile only xmippCore
+./xmipp install [dir]         # Install at dir (by default, ./build)
+```
