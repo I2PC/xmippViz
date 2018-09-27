@@ -41,8 +41,8 @@ public class TextfileJFrame extends JFrame {
     private void loadFile(String filename) {
         File file = new File(filename);
 
-        try {
-            BufferedReader inputStream = new BufferedReader(new FileReader(file));
+        try (BufferedReader inputStream = 
+                new BufferedReader(new FileReader(file))){
 
             String line;
             StringBuilder text = new StringBuilder();

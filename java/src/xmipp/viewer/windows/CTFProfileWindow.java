@@ -528,10 +528,8 @@ public class CTFProfileWindow extends JFrame implements ItemListener, ActionList
         int series = dataset.getSeriesCount();
         int items = dataset.getItemCount(0);
 
-        try {
-            FileWriter fstream = new FileWriter(path);
-            BufferedWriter out = new BufferedWriter(fstream);
-
+        try (FileWriter fstream = new FileWriter(path);
+             BufferedWriter out = new BufferedWriter(fstream); ) {
             // Header.
             out.write("X\t");
             for (int i = 0; i < series; i++) {

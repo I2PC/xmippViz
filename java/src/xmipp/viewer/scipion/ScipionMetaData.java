@@ -94,14 +94,10 @@ public class ScipionMetaData extends MetaData {
     }
 
     public void loadData() {
-        Connection c = null;
-        Statement stmt = null;
-        try {
-        	String query;
-//        	 c = etConnection(filename);
-             c = getConnectionReadOnly(filename);
-             stmt = c.createStatement();
-             ResultSet rs;
+        ResultSet rs = null;
+        try (Connection c = getConnectionReadOnly(filename);
+             Statement stmt = c.createStatement()) {
+            String query;
         	if (preffix == null || preffix.equals(""))
             {
         		query = "SELECT name FROM sqlite_master WHERE type='table' AND name='Properties';";
@@ -146,11 +142,8 @@ public class ScipionMetaData extends MetaData {
             commentci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_STRING, false, false);
             columns.add(commentci);
 
-           
-
             loadValues(c);
            
-            
             query = String.format("SELECT * FROM %sClasses;", preffix);
             rs = stmt.executeQuery(query);
             while (rs.next()) {
@@ -171,30 +164,22 @@ public class ScipionMetaData extends MetaData {
                 ci = new ColumnInfo(labelscount, name, alias, type, allowRender, false);
                 columns.add(ci);
             }
-            
-
-            rs.close();
-            stmt.close();
-            c.close();
             StopWatch.getInstance().printElapsedTime("loaded data");
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
-            
-
+        } finally {
+            try {if (null != rs) rs.close(); } catch (SQLException e) {/* suppress */}
         }
     }
 
     protected void loadValues(Connection c)
     {
-        try {
+        String query = String.format("SELECT id, label, comment, enabled FROM %sObjects;", preffix);
+        try (Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(query);) {
             idsmap = new HashMap<Long, EMObject>();
-            Statement stmt = c.createStatement();
-            ResultSet rs;
             EMObject emo;
             String alias;
-            
-            String query = String.format("SELECT id, label, comment, enabled FROM %sObjects;", preffix);
-            rs = stmt.executeQuery(query);
             Object value;
             int index = 0;
             while (rs.next()) {
@@ -224,7 +209,6 @@ public class ScipionMetaData extends MetaData {
             }
         } catch (SQLException ex) {
             throw new IllegalArgumentException(ex);
-            
         }
     }
     
@@ -505,12 +489,8 @@ public class ScipionMetaData extends MetaData {
 
     public void writeBlock(String path) {
         //Might fail if some fixed column was added
-
-        Connection c = null;
         Statement stmt = null;
-        try {
-
-            c = getConnection(path);
+        try (Connection c = getConnection(path)){
             c.setAutoCommit(false);
             stmt = c.createStatement();
 
@@ -569,12 +549,10 @@ public class ScipionMetaData extends MetaData {
             sql = sql.substring(0, sql.length() - 1);
             stmt.executeUpdate(sql);
             c.commit();
-            stmt.close();
-            c.close();
-
         } catch (Exception e) {
             e.printStackTrace();
-
+        } finally {
+            try { if (null != stmt) stmt.close(); } catch (SQLException e) {/* suppress */}
         }
     }
 
@@ -1101,16 +1079,11 @@ public class ScipionMetaData extends MetaData {
     
     
     void loadSelection(String selectedPath, Connection c) {
-        
-        try {
-            
-            Statement stmt = c.createStatement();
-            ResultSet rs;
+        String query = String.format("SELECT id, enabled, label, comment FROM %sObjects;", preffix);
+        try (Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(query);) {
             EMObject emo;
             String alias;
-
-            String query = String.format("SELECT id, enabled, label, comment FROM %sObjects;", preffix);
-            rs = stmt.executeQuery(query);
             Object enabled, label, comment;
             long id;
             enableds = 0;
@@ -1138,10 +1111,6 @@ public class ScipionMetaData extends MetaData {
                 }
                 
             }
-            
-            rs.close();
-            stmt.close();
-            
             if (haschilds) {
                 for (EMObject emobject : emobjects) {
                     if(emobject.childmd != null)
@@ -1229,31 +1198,23 @@ public class ScipionMetaData extends MetaData {
 		if (!filename.endsWith(".sqlite") && !filename.endsWith(".db"))
 				return false; 
 		//Now it will check if contains the required tables to be read as scipion metadata, otherwise will be read as xmipp metadata
-		Connection c;
-		Statement stmt;
-		ResultSet rs;
 		boolean result = true;
-		try
-		{
-//			c = getConnection(filename);
-            c = getConnectionReadOnly(filename);
-			stmt = c.createStatement();
-			String query = "SELECT name FROM sqlite_master WHERE type='table' AND name='Classes';";
-            rs = stmt.executeQuery(query);
+		String query = "SELECT name FROM sqlite_master WHERE type='table' AND name='Classes';";
+		try (Connection c = getConnectionReadOnly(filename);
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(query);) {
     		boolean exists = rs.next();
     		if (!exists)
     			result = false;
     		else
     		{
 	    		query = "SELECT name FROM sqlite_master WHERE type='table' AND name='Objects';";
-	            rs = stmt.executeQuery(query);
-	    		exists = rs.next();
-	    		if (!exists)
-	    			result = false;
+	            try (ResultSet rs1 = stmt.executeQuery(query)) {
+    	    		exists = rs1.next();
+    	    		if (!exists)
+    	    			result = false;
+    			}
     		}
-            rs.close();
-            stmt.close();
-            c.close();
 		}
 		catch (Exception e)
 		{
@@ -1261,7 +1222,6 @@ public class ScipionMetaData extends MetaData {
 			e.printStackTrace();
 			return false;
 		}
-		
         return result;
 	}
    
