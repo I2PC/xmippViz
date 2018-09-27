@@ -545,8 +545,6 @@ public class CTFProfileWindow extends JFrame implements ItemListener, ActionList
                 }
                 out.newLine();
             }
-            out.close();
-
             return true;
         } catch (Exception ex) {
             //ex.printStackTrace();
