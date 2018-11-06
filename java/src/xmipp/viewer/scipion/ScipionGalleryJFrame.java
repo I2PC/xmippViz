@@ -97,16 +97,29 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
             return;
             
         if (type != null) {
-            if(!data.isCTFMd())
-            {
-                cmdbutton = XmippWindowUtil.getScipionIconButton("Create " + type);
-                cmdbutton.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        createSimpleSubset();
-                    }
-                });
+            if(!data.isCTFMd()) {
+                System.out.println(" > > >  H E R E  < < <");
+                System.out.println(" other = "+other);
+                if (other.startsWith("coordsCons")) {
+                    System.out.println("  >   inside conditional: deepCons discovered!   <");
+                    cmdbutton = XmippWindowUtil.getScipionIconButton("Create Coordinates");
+                    cmdbutton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            createCoordSubsetFromImages();
+                        }
+                    });
+                }
+                else
+                {
+                    cmdbutton = XmippWindowUtil.getScipionIconButton("Create " + type);
+                    cmdbutton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            createSimpleSubset();
+                        }
+                    });
+                }
                 buttonspn.add(cmdbutton);
             }
             if(data.hasClasses())
@@ -270,6 +283,38 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
         {
             String command = String.format(runProtCreateSubset, 
                     inputid, sqlitefile, data.getPreffix(), String.format("SetOf%s", type), other, getRunLabel());
+            runCommand(command, "Creating set ...");
+        }
+    }
+
+    protected void createCoordSubsetFromImages()
+    {
+        int size = 0;
+
+        if(data.hasClasses())
+        {
+            boolean[] selection = gallery.getSelection();
+            for(ScipionMetaData.EMObject emo: ((ScipionGalleryData)data).getEMObjects())
+            {
+                if(gallery.hasSelection() && !data.hasDisabled())
+                {
+                    if(selection[emo.index] && emo.childmd != null)
+                        size += emo.childmd.getEnabledCount();
+                }
+                else if(emo.isEnabled() && emo.childmd != null)
+                    size += emo.childmd.getEnabledCount();
+            }
+        }
+        else if (gallery.hasSelection() && !data.hasDisabled())
+            size = gallery.getSelectionCount();
+        else
+            size = data.getEnabledCount();
+
+        if (confirmCreate("Coordinates", size))
+        {
+            String command = String.format(runProtCreateSubset,
+                    inputid, sqlitefile, data.getPreffix(), String.format("SetOfCoordinates"), other, getRunLabel());
+            System.out.println("createCoordSubsetFromImages() -> command = " + command);
             runCommand(command, "Creating set ...");
         }
     }

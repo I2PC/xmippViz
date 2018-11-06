@@ -1255,6 +1255,12 @@ public class GalleryData {
         return md.containsMicrographParticles();
     }
 
+    public boolean isParticleFromCoordConsensus() {
+        boolean result = md.hasCoordConsensusLabel();
+        System.out.println("isParticleFromCoordConsensus() = " + result);
+        return result;
+    }
+
     public String getFileName() {
         return filename;
 

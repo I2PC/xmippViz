@@ -215,6 +215,20 @@ public class MetaData {
 		return true;
 	}
 
+	public boolean hasCoordConsensusLabel() {
+		try {
+			System.out.println("MDLabel.MDL_COORD_CONSENSUS_SCORE = " + MDLabel.MDL_COORD_CONSENSUS_SCORE);
+			int[] labels = new int[]{MDLabel.MDL_COORD_CONSENSUS_SCORE};
+			for (int i = 0; i < labels.length; i++)
+				if (!containsLabel(labels[i]))
+				    System.out.println(labels[i] + " label not found");
+					return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 	public boolean containsMicrographsInfo() {
 		try {
 			// Should contain some micrographs labels

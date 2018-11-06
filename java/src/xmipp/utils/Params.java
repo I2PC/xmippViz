@@ -91,6 +91,7 @@ public class Params {
     public boolean inverty;
 	public boolean renderImages = true;
     public boolean recalculateCTF = true;
+    public Integer coordCons;
 
 
     public Params() {
