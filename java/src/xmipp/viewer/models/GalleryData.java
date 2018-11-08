@@ -1257,7 +1257,7 @@ public class GalleryData {
 
     public boolean isParticleFromCoordConsensus() {
         boolean result = md.hasCoordConsensusLabel();
-        System.out.println("isParticleFromCoordConsensus() = " + result);
+        // System.out.println("isParticleFromCoordConsensus() = " + result);
         return result;
     }
 

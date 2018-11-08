@@ -217,7 +217,6 @@ public class MetaData {
 
 	public boolean hasCoordConsensusLabel() {
 		try {
-			System.out.println("MDLabel.MDL_COORD_CONSENSUS_SCORE = " + MDLabel.MDL_COORD_CONSENSUS_SCORE);
 			int[] labels = new int[]{MDLabel.MDL_COORD_CONSENSUS_SCORE};
 			for (int i = 0; i < labels.length; i++)
 				if (!containsLabel(labels[i]))
