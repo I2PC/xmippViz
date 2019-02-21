@@ -309,10 +309,10 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
 
         if (confirmCreate("Coordinates", size))
         {
-            String command = String.format(runProtCreateSubset,
+            String runProtDeepConsSubset = "run protocol XmippProtDeepConsSubSet inputObject=%s sqliteFile='%s','%s' outputClassName=%s other='%s' label='%s'";
+            String command = String.format(runProtDeepConsSubset,
                     inputid, sqlitefile, data.getPreffix(),
                     String.format("SetOfCoordinates"), other, getRunLabel());
-            System.out.println("createCoordSubsetFromImages() -> command = " + command);
             runCommand(command, "Creating set ...");
         }
     }
