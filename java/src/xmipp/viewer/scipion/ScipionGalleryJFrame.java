@@ -53,7 +53,7 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
 
     private static final String runProtCreateSubset = "run protocol ProtUserSubSet inputObject=%s sqliteFile='%s','%s' outputClassName=%s other='%s' label='%s'";
     
-   
+
     public ScipionGalleryJFrame(ScipionGalleryData data) {
         super(data);
         readScipionParams((ScipionParams)data.parameters);
@@ -98,7 +98,7 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
             
         if (type != null) {
             if(!data.isCTFMd()) {
-                if (other.startsWith("coordsCons")) {
+                if (other.endsWith("deepCons")) {
                     cmdbutton = XmippWindowUtil.getScipionIconButton("Create Coordinates");
                     cmdbutton.addActionListener(new ActionListener() {
                         @Override
