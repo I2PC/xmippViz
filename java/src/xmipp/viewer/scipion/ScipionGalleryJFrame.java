@@ -98,7 +98,7 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
             
         if (type != null) {
             if(!data.isCTFMd()) {
-                if (other.endsWith("deepCons")) {
+                if (other.equals("deepCons")) {
                     cmdbutton = XmippWindowUtil.getScipionIconButton("Create Coordinates");
                     cmdbutton.addActionListener(new ActionListener() {
                         @Override
