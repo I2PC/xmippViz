@@ -5,8 +5,8 @@ public class XmippError {
    public static final int ERR_ARG_BADCMDLINE = 1;      /// < Errors on command line parameters.
    public static final int ERR_ARG_INCORRECT = 2;       /// < Incorrect argument received.
    public static final int ERR_ARG_MISSING = 3;         /// < Argument missing.
-   public static final int ERR_ARG_DEPENDENCE = 4;      /// < Error with some arguments dependecies
-   public static final int ERR_PROG_NOTDEF = 5;         /// < Requiered function not implemented
+   public static final int ERR_ARG_DEPENDENCE = 4;      /// < Error with some arguments dependencies
+   public static final int ERR_PROG_NOTDEF = 5;         /// < Required function not implemented
    public static final int ERR_DEBUG_TEST = 6;          /// < Just an error for debugging purpose.
    public static final int ERR_DEBUG_IMPOSIBLE = 7;     /// < Just for debugging, situation that can't happens
    public static final int ERR_DOCFILE = 8;             /// < Error in docfile format

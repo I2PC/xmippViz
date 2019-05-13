@@ -53,7 +53,7 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
 
     private static final String runProtCreateSubset = "run protocol ProtUserSubSet inputObject=%s sqliteFile='%s','%s' outputClassName=%s other='%s' label='%s'";
     
-   
+
     public ScipionGalleryJFrame(ScipionGalleryData data) {
         super(data);
         readScipionParams((ScipionParams)data.parameters);
@@ -97,16 +97,26 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
             return;
             
         if (type != null) {
-            if(!data.isCTFMd())
-            {
-                cmdbutton = XmippWindowUtil.getScipionIconButton("Create " + type);
-                cmdbutton.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        createSimpleSubset();
-                    }
-                });
+            if(!data.isCTFMd()) {
+                if (other.equals("deepCons")) {
+                    cmdbutton = XmippWindowUtil.getScipionIconButton("Create Coordinates");
+                    cmdbutton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            createCoordSubsetFromImages();
+                        }
+                    });
+                }
+                else
+                {
+                    cmdbutton = XmippWindowUtil.getScipionIconButton("Create " + type);
+                    cmdbutton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            createSimpleSubset();
+                        }
+                    });
+                }
                 buttonspn.add(cmdbutton);
             }
             if(data.hasClasses())
@@ -270,6 +280,39 @@ public class ScipionGalleryJFrame extends GalleryJFrame {
         {
             String command = String.format(runProtCreateSubset, 
                     inputid, sqlitefile, data.getPreffix(), String.format("SetOf%s", type), other, getRunLabel());
+            runCommand(command, "Creating set ...");
+        }
+    }
+
+    protected void createCoordSubsetFromImages()
+    {
+        int size = 0;
+
+        if(data.hasClasses())
+        {
+            boolean[] selection = gallery.getSelection();
+            for(ScipionMetaData.EMObject emo: ((ScipionGalleryData)data).getEMObjects())
+            {
+                if(gallery.hasSelection() && !data.hasDisabled())
+                {
+                    if(selection[emo.index] && emo.childmd != null)
+                        size += emo.childmd.getEnabledCount();
+                }
+                else if(emo.isEnabled() && emo.childmd != null)
+                    size += emo.childmd.getEnabledCount();
+            }
+        }
+        else if (gallery.hasSelection() && !data.hasDisabled())
+            size = gallery.getSelectionCount();
+        else
+            size = data.getEnabledCount();
+
+        if (confirmCreate("Coordinates", size))
+        {
+            String runProtDeepConsSubset = "run protocol XmippProtDeepConsSubSet inputObject=%s sqliteFile='%s','%s' outputClassName=%s other='%s' label='%s'";
+            String command = String.format(runProtDeepConsSubset,
+                    inputid, sqlitefile, data.getPreffix(),
+                    String.format("SetOfCoordinates"), other, getRunLabel());
             runCommand(command, "Creating set ...");
         }
     }
