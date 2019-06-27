@@ -23,7 +23,8 @@
 
 #### Java
 *.class
-*MDLabel.java
+java/src/xmipp/jni/MDLabel.java
+java/src/xmipp/jni/XmippError.java
 
 #### Python
 *.pyc
