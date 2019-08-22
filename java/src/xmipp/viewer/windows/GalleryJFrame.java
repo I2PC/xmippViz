@@ -54,32 +54,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.ActionMap;
-import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -1164,7 +1140,9 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	protected void createCombos()
 	{
 		cbPanel = new JPanel();
-		cbPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		// add some padding
+		cbPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		cbPanel.setLayout(new BoxLayout(cbPanel,BoxLayout.LINE_AXIS));
 
 		// Add blocks selector combo
 		jlBlocks = new JLabel(XmippLabel.LABEL_BLOCK);
@@ -1217,6 +1195,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 			cbPanel.add(jcbBlocks);
 		}
 		// Add volumes selector combo
+		cbPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		jlVolumes = new JLabel(XmippLabel.LABEL_VOLUME);
 		cbPanel.add(jlVolumes);
 		jcbVolumes = new JComboBox();
@@ -1607,8 +1586,6 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
                         
 			
 			addItem(MD_CLASSES, "Classes");
-			addItem(MD_EDIT_COLS, "Edit labels", "edit.gif");
-			addItem(MD_ADD_OBJECT, "Add new object", "new_object.gif");
 			addItem(MD_REMOVE_DISABLED, "Remove disabled", "delete.gif");
 			addItem(MD_REMOVE_SELECTION, "Remove selection");
 			addItem(MD_SAVE_SELECTION, "Save state", "save.gif");
@@ -1656,7 +1633,6 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 			setItemEnabled(TOOLS_AVGSTD, doStats);
 			setItemEnabled(TOOLS_FSC, doStats);
 			setItemEnabled(TOOLS_PCA, doStats);
-			setItemEnabled(MD_ADD_OBJECT, isCol);
 			setItemEnabled(MD_REMOVE_DISABLED, isCol);
 			setItemEnabled(MD_REMOVE_SELECTION, isCol);
 			setItemEnabled(MD_SAVE_SELECTION, isCol);
@@ -1803,11 +1779,6 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 				{
 					openClassesDialog();
 				}
-				else if (cmd.equals(MD_EDIT_COLS))
-				{
-					EditLabelsJDialog dlg = new EditLabelsJDialog(GalleryJFrame.this);
-					dlg.showDialog();
-				}
 				else if (cmd.equals(MD_REMOVE_SELECTION))
 				{
 					if (gallery.getSelectionCount() > 0)
@@ -1825,12 +1796,6 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 				else if (cmd.equals(MD_FIND_REPLACE))
 				{
 					findReplace();
-				}
-				else if (cmd.equals(MD_ADD_OBJECT))
-				{
-                                    boolean added = data.addObject();
-                                    if(added)
-                                        reloadMd();
 				}
 				else if (cmd.equals(HELP_ONLINE))
 				{
@@ -2407,7 +2372,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
                     String scipionHome = System.getenv().get("SCIPION_HOME");
                     if(scipionHome == null)
                     {
-                        XmippDialog.showError(GalleryJFrame.this, "Scipion is not available");
+                        XmippDialog.showError(GalleryJFrame.this, "Chimera is not available");
                         return;
                     }
                     
