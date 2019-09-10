@@ -215,16 +215,11 @@ public class MetadataTableModel extends MetadataGalleryTableModel {
 	@Override
 	public boolean isCellEditable(int row, int column) {
 
-		return false;
+        ColumnInfo ci = visibleLabels.get(column);
+        return ci.isEnable();
 
 	}
 
-	// @Override
-	// public String getImageFilenameAt(int row, int col){
-	// ColumnInfo ci = visibleLabels.get(col);
-	// return (ci.render && data.isImageFile(ci))
-	// ? data.getValueFromCol(row, ci) : null;
-	// }
 	@Override
 	public boolean handleDoubleClick(int row, int col) {
 		try {

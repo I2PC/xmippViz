@@ -27,6 +27,8 @@ package xmipp.viewer.windows;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +38,15 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import xmipp.ij.commons.XmippApplication;
-import xmipp.jni.MetaData;
 import xmipp.utils.XmippDialog;
 import xmipp.utils.XmippWindowUtil;
 import xmipp.viewer.models.ColumnInfo;
 
 public class ColumnsJDialog extends XmippDialog {
 	private static final long serialVersionUID = 1L;
+	public static final int VISIBLE_COL = 1;
+	public static final int RENDER_COL = 2;
+	public static final int LABEL_COL = 0;
 	private JTable tableColumns;
 	private JButton btnUp;
 	private JButton btnDown;
@@ -80,7 +83,7 @@ public class ColumnsJDialog extends XmippDialog {
 		tableColumns = new JTable(model){
 			@Override
 			public TableCellRenderer getCellRenderer(int row, int column) {
-				if (column == 2) {
+				if (column == RENDER_COL) {
 					return renderColumneRenderer;
 				} else {
 					// else...
@@ -112,14 +115,48 @@ public class ColumnsJDialog extends XmippDialog {
 						enableUpDown(true);
 					}
 				});
+
+		addHeaderClickListener();
+
 		formatTable();
 	}// function initComponents
+
+
+    private void addHeaderClickListener(){
+		// listener
+		tableColumns.getTableHeader().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int col = tableColumns.columnAtPoint(e.getPoint());
+				if (col != LABEL_COL){
+					proccesHeaderClick(col);
+				}
+			}
+		});
+	}
+
+	private void proccesHeaderClick(int col){
+
+		// get the first value
+		Boolean firstValue = null;
+		for(int row = 0;row < tableColumns.getRowCount();row++) {
+
+			Boolean value = (Boolean)tableColumns.getModel().getValueAt(row, col);
+			if (firstValue == null && value != null){
+				firstValue = value;
+			}
+
+			if (firstValue != null) {
+				tableColumns.setValueAt(!firstValue, row, col);
+			}
+		}
+	}
 	
 	protected void formatTable() {
         tableColumns.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tableColumns.getColumnModel().getColumn(0).setPreferredWidth(250);
-        tableColumns.getColumnModel().getColumn(1).setPreferredWidth(50);
-        tableColumns.getColumnModel().getColumn(2).setPreferredWidth(50);
+        tableColumns.getColumnModel().getColumn(LABEL_COL).setPreferredWidth(250);
+        tableColumns.getColumnModel().getColumn(VISIBLE_COL).setPreferredWidth(50);
+        tableColumns.getColumnModel().getColumn(RENDER_COL).setPreferredWidth(50);
         
     }
 
@@ -129,10 +166,10 @@ public class ColumnsJDialog extends XmippDialog {
 	}// function enableUpDown
 
 	// move the selection on the table, -1 up, 0 down
-	protected void moveSelection(int deltha) {
+	protected void moveSelection(int delta) {
 		int pos = tableColumns.getSelectedRow();
 		ColumnInfo ci = rows.remove(pos);
-		pos += deltha;
+		pos += delta;
 		rows.add(pos, ci);
 		model.fireTableDataChanged();
 		tableColumns.setRowSelectionInterval(pos, pos);
@@ -190,7 +227,7 @@ public class ColumnsJDialog extends XmippDialog {
 		@Override
 		public boolean isCellEditable(int row, int column) {
 			try {
-				if (column == 2 && !rows.get(row).allowRender)
+				if (column == RENDER_COL && !rows.get(row).allowRender)
 					return false;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -202,13 +239,13 @@ public class ColumnsJDialog extends XmippDialog {
 		public void setValueAt(Object value, int row, int column) {
 			ColumnInfo col = rows.get(row);
 			switch (column) {
-			case 0:
+			case LABEL_COL:
 				col.labelName = ((String)value);
 				break;
-			case 1:
+			case VISIBLE_COL:
 				col.visible = (Boolean) value;
 				break;
-			case 2:
+			case RENDER_COL:
 				col.render = (Boolean) value;
 				break;
 			}
