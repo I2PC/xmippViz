@@ -126,7 +126,6 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	private JLabel jlColumns;
 	private JToggleButton jcbAutoAdjustColumns;
 	private JButton btnChangeView;
-	protected JPanel jpBottom;
 	protected JSpinner jsColumns;
 	protected JSpinner jsGoToImage;
 	private JScrollPane jspContent;
@@ -139,8 +138,6 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	protected JLabel jlBlocks;
 	protected JLabel jlVolumes;
 	protected TasksEngine ctfTasks;
-	// private javax.swing.JToggleButton jtbNormalize;
-	// private javax.swing.JToggleButton jtbUseGeometry;
 	private JTable table;
 	private JToolBar toolBar;
 	private int width = -1;

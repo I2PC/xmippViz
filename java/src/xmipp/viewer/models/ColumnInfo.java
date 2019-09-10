@@ -37,39 +37,38 @@ public class ColumnInfo {
 	public boolean visible; 
 	public boolean render;
 	public boolean allowRender = false;
-	public boolean allowEdit = false;
 	public String comment;
         public int type;
 	
 	/** Constructors */
 	
-	public ColumnInfo(int label, String name, String comment, int type, boolean allowRender, boolean visible, boolean render, boolean allowEdit){
+	public ColumnInfo(int label, String name, String comment, int type, boolean allowRender, boolean visible, boolean render){
 		this.label = label;
 		this.labelName = name;
 		this.visible = visible;
 		this.render = render;
 		this.allowRender = allowRender;
-                this.comment = comment;
-                this.type = type;
-                this.allowEdit = allowEdit;
+		this.comment = comment;
+		this.type = type;
+
 	}
         
 	
-        public ColumnInfo(int label, String name, String comment, int type, boolean allowRender,boolean allowEdit){
-            this(label, name, comment, type, allowRender, true, allowRender, allowEdit);
+        public ColumnInfo(int label, String name, String comment, int type, boolean allowRender){
+            this(label, name, comment, type, allowRender, true, allowRender);
         }
 	
 	public ColumnInfo(int label){
-		this(label, MetaData.getLabelName(label), MetaData.getLabelComment(label), MetaData.getLabelType(label), MetaData.isImage(label), true, false, true);
+		this(label, MetaData.getLabelName(label), MetaData.getLabelComment(label), MetaData.getLabelType(label), MetaData.isImage(label), true, false);
 	}
         
 	
 	public ColumnInfo(int label, boolean visible){
-		this(label, MetaData.getLabelName(label), MetaData.getLabelComment(label), MetaData.getLabelType(label), MetaData.isImage(label), visible, false, true);
+		this(label, MetaData.getLabelName(label), MetaData.getLabelComment(label), MetaData.getLabelType(label), MetaData.isImage(label), visible, false);
 	}
 	
 	public ColumnInfo(int label, boolean visible, boolean render){
-		this(label, MetaData.getLabelName(label), MetaData.getLabelComment(label), MetaData.getLabelType(label), MetaData.isImage(label), visible, render, true);
+		this(label, MetaData.getLabelName(label), MetaData.getLabelComment(label), MetaData.getLabelType(label), MetaData.isImage(label), visible, render);
 	}	
 	
 	/** Update the column information with the provided one
@@ -77,10 +76,9 @@ public class ColumnInfo {
 	 */
 	public boolean updateInfo(ColumnInfo ci){
 		boolean result = labelName != ci.labelName || visible != ci.visible
-				|| render != ci.render || allowEdit != ci.allowEdit;
+				|| render != ci.render;
 		visible = ci.visible;
 		render = ci.render;
-		allowEdit = ci.allowEdit;
 		labelName = ci.labelName;
 		return result;
 	}
@@ -97,7 +95,7 @@ public class ColumnInfo {
 
 	
 	public ColumnInfo clone(){
-		return new ColumnInfo(label, labelName, comment, type, allowRender, visible, render, allowEdit);
+		return new ColumnInfo(label, labelName, comment, type, allowRender, visible, render);
 	}
 	
 	@Override

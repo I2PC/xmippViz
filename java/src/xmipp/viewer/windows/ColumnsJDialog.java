@@ -25,23 +25,16 @@
 
 package xmipp.viewer.windows;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import xmipp.ij.commons.XmippApplication;
 import xmipp.jni.MetaData;
@@ -83,7 +76,18 @@ public class ColumnsJDialog extends XmippDialog {
 		groupstbpn.add(sp);
 		sp.setOpaque(true);
 		model = new ColumnsTableModel(((GalleryJFrame)parent).getData().getLabelsInfo());
-		tableColumns = new JTable(model);
+		TableCellRenderer renderColumneRenderer = new RenderColumnRenderer();
+		tableColumns = new JTable(model){
+			@Override
+			public TableCellRenderer getCellRenderer(int row, int column) {
+				if (column == 2) {
+					return renderColumneRenderer;
+				} else {
+					// else...
+					return super.getCellRenderer(row, column);
+				}
+			}
+		};
 		tableColumns
 				.setPreferredScrollableViewportSize(new Dimension(350, 200));
 		sp.setViewportView(tableColumns);
@@ -113,10 +117,9 @@ public class ColumnsJDialog extends XmippDialog {
 	
 	protected void formatTable() {
         tableColumns.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tableColumns.getColumnModel().getColumn(0).setPreferredWidth(200);
+        tableColumns.getColumnModel().getColumn(0).setPreferredWidth(250);
         tableColumns.getColumnModel().getColumn(1).setPreferredWidth(50);
         tableColumns.getColumnModel().getColumn(2).setPreferredWidth(50);
-        tableColumns.getColumnModel().getColumn(3).setPreferredWidth(50);
         
     }
 
@@ -148,7 +151,7 @@ public class ColumnsJDialog extends XmippDialog {
 	class ColumnsTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
 
-		private String[] columns = { "Label", "Visible", "Render", "Edit" };
+		private String[] columns = { "Label", "Visible", "Render"};
 
 		public ColumnsTableModel(int[] labels) {
 			rows = new ArrayList<ColumnInfo>(labels.length);
@@ -189,10 +192,6 @@ public class ColumnsJDialog extends XmippDialog {
 			try {
 				if (column == 2 && !rows.get(row).allowRender)
 					return false;
-				GalleryJFrame frame = (GalleryJFrame)parent;
-				
-				if (column == 3 && frame.data.isScipionInstance())
-					return false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -212,9 +211,6 @@ public class ColumnsJDialog extends XmippDialog {
 			case 2:
 				col.render = (Boolean) value;
 				break;
-			case 3:
-				col.allowEdit = (Boolean) value;
-				break;
 			}
 
 		}
@@ -228,13 +224,45 @@ public class ColumnsJDialog extends XmippDialog {
 			case 1:
 				return col.visible;
 			case 2:
-				return col.render;
-			case 3:
-				return col.allowEdit;
+				if (col.allowRender) {
+					return col.render;
+				}else {
+					return null;
+				}
 			}
 			return null;
 		}
 
 	}// class ColumnsTableModel
+
+	// Custom renderer to render checkboxes only if value is not null
+	public class RenderColumnRenderer extends JCheckBox implements TableCellRenderer {
+
+		RenderColumnRenderer() {
+			setHorizontalAlignment(JLabel.CENTER);
+		}
+
+		public Component getTableCellRendererComponent(JTable table, Object value,
+													   boolean isSelected, boolean hasFocus, int row, int column) {
+
+			if (isSelected) {
+				setForeground(table.getSelectionForeground());
+				//super.setBackground(table.getSelectionBackground());
+				setBackground(table.getSelectionBackground());
+			} else {
+				setForeground(table.getForeground());
+				setBackground(table.getBackground());
+			}
+			setSelected((value != null && ((Boolean) value).booleanValue()));
+
+			// If the column allows renderization ...
+			if (value == null){
+				return null;
+			} else {
+				return this;
+			}
+		}
+
+	}
 
 }// class ColumnsJDialog

@@ -128,22 +128,22 @@ public class ScipionMetaData extends MetaData {
 
             name = alias = "enabled";
             labelscount++;
-            enabledci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_INT, false, true);
+            enabledci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_INT, false);
             columns.add(enabledci);
 
             name = alias = "id";
             labelscount++;
-            idci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_INT, false, false);
+            idci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_INT, false);
             columns.add(idci);
 
             name = alias = "label";
             labelscount++;
-            labelci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_STRING, false, false);
+            labelci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_STRING, false);
             columns.add(labelci);
 
             name = alias = "comment";
             labelscount++;
-            commentci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_STRING, false, false);
+            commentci = new ColumnInfo(labelscount, name, alias, MetaData.LABEL_STRING, false);
             columns.add(commentci);
 
            
@@ -168,7 +168,7 @@ public class ScipionMetaData extends MetaData {
                 	continue;//complex object is empty, unless is matrix
                 labelscount++;
                 allowRender = isImage(name);
-                ci = new ColumnInfo(labelscount, name, alias, type, allowRender, false);
+                ci = new ColumnInfo(labelscount, name, alias, type, allowRender);
                 columns.add(ci);
             }
             
