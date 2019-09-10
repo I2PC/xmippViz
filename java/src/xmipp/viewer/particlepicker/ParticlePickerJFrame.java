@@ -6,18 +6,7 @@ import ij.ImagePlus;
 import ij.plugin.frame.Recorder;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -34,8 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MenuEvent;
@@ -86,7 +73,6 @@ public abstract class ParticlePickerJFrame extends JFrame implements ActionListe
 	protected String activefilter;
 
     // Particle size
-	protected JSlider sizesl;
 	protected JPanel sizepn;
     protected JLabel sizelb;
     protected JFormattedTextField sizetf;
@@ -321,7 +307,13 @@ public abstract class ParticlePickerJFrame extends JFrame implements ActionListe
         return true;
     }
 
-    protected class MicrographsSelectionListener implements ListSelectionListener
+	public void processSizeMouseWheelEvent(MouseWheelEvent e) {
+
+		int notches = e.getWheelRotation();
+		increaseBoxSize(notches);
+	}
+
+	protected class MicrographsSelectionListener implements ListSelectionListener
         {
 
 			@Override
@@ -550,7 +542,6 @@ public abstract class ParticlePickerJFrame extends JFrame implements ActionListe
 	{
 		importmi.setEnabled(enable);
 		savemi.setEnabled(enable);
-		sizesl.setEnabled(enable);
 		sizetf.setEnabled(enable);
 		colorbt.setEnabled(enable);
 		resetbt.setEnabled(enable);
@@ -1082,22 +1073,50 @@ public abstract class ParticlePickerJFrame extends JFrame implements ActionListe
 		int size = getParticlePicker().getSize();
 		sizelb = new JLabel("Size (px):");
 		sizepn.add(sizelb);
-		sizesl = new JSlider(10, ParticlePicker.sizemax, size);
-        sizesl.setOpaque(false);
-		sizesl.setPaintTicks(false);
-		sizesl.setMajorTickSpacing(100);
-		int height = (int) sizesl.getPreferredSize().getHeight();
-		sizesl.setPreferredSize(new Dimension(50, height));
-		sizepn.add(sizesl);
 		sizetf = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		sizetf.setColumns(4);
 		sizetf.setValue(size);
 		sizepn.add(sizetf);
+		listenToFocusEventsOnSize();
+		listenToChangeOnSize();
+		// This is commented due to coredumps when rapid changes happen when pressing + or -
+		//listenToKeysOnSize();
+		listenToMouseOnSize();
+		sizetf.setToolTipText("Use +, - or the mousewheel to quickly change the box size. Return will apply the size.");
+
+	}
+
+	private void listenToMouseOnSize() {
+
+    	sizetf.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+
+				processSizeMouseWheelEvent(mouseWheelEvent);
+
+			}
+		});
+	}
+
+	private void listenToChangeOnSize() {
+		sizetf.addActionListener(new ActionListener(){
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // event from sizes
+                        readSizeFromTextField();
+                    }
+		});
+	}
+
+	private void listenToFocusEventsOnSize() {
 		sizetf.addFocusListener(new FocusListener()
 		{
 
                     @Override
                     public void focusGained(FocusEvent fe) {
+
+                        sizetf.selectAll();
                     }
 
                     @Override
@@ -1116,42 +1135,52 @@ public abstract class ParticlePickerJFrame extends JFrame implements ActionListe
                         }
                     }
 		});
-        sizetf.addActionListener(new ActionListener(){
+	}
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // event from sizes
-                            readSizeFromTextField();
-                    }
-		});
+	private void listenToKeysOnSize() {
 
-		sizesl.addChangeListener(new ChangeListener()
-		{
+    	sizetf.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent keyEvent) {
+				Character newValue = keyEvent.getKeyChar();
+
+				if (newValue == "+".charAt(0)){
+					increaseBoxSize(1);
+
+				} else if (newValue == "-".charAt(0)){
+
+					increaseBoxSize(-1);
+					keyEvent.consume();
+				}
+
+				// if it's not a digit, do not let it pass
+				if (!newValue.isDigit(newValue)) {
+					keyEvent.consume();
+				}
+			}
 
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				if (sizesl.getValueIsAdjusting()) 
-					return;
-                                int size = sizesl.getValue();
-				if (size == getParticlePicker().getSize())
-					return;
-				
-				if (!getParticlePicker().isValidSize(ParticlePickerJFrame.this, size))
-				{
-					sizesl.dispatchEvent(//trick to repaint slider after changing value
-                                            new MouseEvent(sizesl, MouseEvent.MOUSE_RELEASED,0,0,0,0,1,false));
-					int prevsize = getParticlePicker().getSize();
-					sizesl.setValue(prevsize);
-					return;
-				}
-				updateSize(size);
+			public void keyPressed(KeyEvent keyEvent) {
+
 			}
+
+			@Override
+			public void keyReleased(KeyEvent keyEvent) {
+
+			}
+
 		});
+	}
+
+	private void increaseBoxSize(int value){
+
+		int size = ((Number) sizetf.getValue()).intValue();
+		sizetf.setValue(size + value);
+		readSizeFromTextField();
 
 	}
-        
-    protected void readSizeFromTextField()
+
+	protected void readSizeFromTextField()
     {
         
         int size = ((Number) sizetf.getValue()).intValue();
@@ -1173,7 +1202,7 @@ public abstract class ParticlePickerJFrame extends JFrame implements ActionListe
 	{
 		
 		sizetf.setValue(size);
-		sizesl.setValue(size);
+        sizetf.selectAll();
 		if(getCanvas() != null)
 			getCanvas().repaint();
 		getParticlePicker().setSize(size);
