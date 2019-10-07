@@ -21,10 +21,10 @@ class chimeraInterface():
     
     def createSocket(self):
         '''Create socket and wait for a new client'''
-        print 'Waiting for client'
+        print('Waiting for client')
         self.listener = Listener((self.address, self.port), authkey=self.authkey) 
         self.remote_conn = self.listener.accept()
-        print 'Got client ' + self.listener.last_accepted[0] + ':%d' % (self.listener.last_accepted[1])
+        print('Got client ' + self.listener.last_accepted[0] + ':%d' % (self.listener.last_accepted[1]))
           
          
     def openVolume(self):
@@ -47,7 +47,7 @@ class chimeraInterface():
             else:
               time.sleep(0.01)
         except EOFError:
-          print 'Lost connection to client'
+          print('Lost connection to client')
           self.listener.close()
             
     #def motionStart(self, trigger, x, file):

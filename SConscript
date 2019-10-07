@@ -115,7 +115,7 @@ def WriteJavaEnum(class_name, header_file, pattern, log):
     env.Depends(java_file, header_file)
     fOut = open(java_file, 'w+')
     counter = 0;
-    if isinstance(pattern, basestring):
+    if isinstance(pattern, str):
         patternList = [pattern]
     elif isinstance(pattern, list):
         patternList = pattern
@@ -155,7 +155,7 @@ public class %s {
 
 def ExtractEnumFromHeader(env, target, source):
     log = open(str(target[0]), 'w+')
-    for (class_name, list) in javaEnumDict.iteritems():
+    for (class_name, list) in javaEnumDict.items():
         WriteJavaEnum(class_name, list[0], list[1], log)
 
     log.close()
@@ -176,7 +176,7 @@ javaBuild = Execute(Mkdir(epath('java/build')))
 
 # Update enums in java files from C++ headers. If they don't exist, generate them.
 log = open(fpath('java/build/javaLog'), 'w+')
-for class_name, class_list in javaEnumDict.iteritems():
+for class_name, class_list in javaEnumDict.items():
     WriteJavaEnum(class_name, class_list[0], class_list[1], log)
 
 javaExtractCommand = env.Command(
