@@ -342,7 +342,7 @@ def AddMatchingFiles(params, directory, files):
 def Glob(path, pattern, blacklist=[]):
     """ Custom made globbing, walking into all subdirectories from path. """
     sources = []
-    os.path.walk(path, AddMatchingFiles, (pattern, blacklist, sources))
+    os.walk(path, AddMatchingFiles, (pattern, blacklist, sources))
     return sources
 
 
