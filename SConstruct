@@ -332,7 +332,7 @@ def AddMatchingFiles(params, directory, files):
     """ Callback, adds all matching files in dir
         params[0] = pattern
         params[1] = blacklist
-        params[0] = sources
+        params[2] = sources
     """
     for filename in fnmatch.filter(files, params[0]):
         if filename not in params[1]:
@@ -342,7 +342,13 @@ def AddMatchingFiles(params, directory, files):
 def Glob(path, pattern, blacklist=[]):
     """ Custom made globbing, walking into all subdirectories from path. """
     sources = []
-    os.walk(path, AddMatchingFiles, (pattern, blacklist, sources))
+    # os.walk(path, AddMatchingFiles, (pattern, blacklist, sources))
+
+    for d, r, f in next(os.walk(path)):
+        for file in fnmatch.filter(f, pattern):
+            if file not in blacklist:
+                sources.append(os.path.join(r, file))
+
     return sources
 
 
