@@ -170,7 +170,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	private int width = -1;
 	private JButton reslicebt;
 	private String[] reslices = new String[] { "Z Negative (Front)", "Y Negative (Top)", "X Negative (Left)", "Y Positive (Bottom)",
-			"X Positive (Right)" };;
+			"X Positive (Right)" };
 
 	protected static final float MAX_HEIGHT_RATE = 2.0f / 3.0f;
 	// this rate is width/height
@@ -183,7 +183,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	
 
 
-	/** Store data about visualization */
+	/* Store data about visualization */
 	protected GalleryData data;
 	private ExtractPickerJFrame extractframe;
 	private ButtonGroup reslicegroup;
@@ -192,7 +192,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
     protected JButton plotbt;
 	protected JButton chimerabt;
 
-	/** Some static initialization for fancy default dimensions */
+	/* Some static initialization for fancy default dimensions */
 	static
 	{
 		screenSize = XmippWindowUtil.getScreenRectangle().getSize();
@@ -276,10 +276,8 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	}
 	/**
 	 * Function to create the gallery type depending on the filename
-	 * 
-	 * @throws Exception
 	 */
-	protected void createModel(boolean[] selection) throws Exception
+	protected void createModel(boolean[] selection)
 	{
 		gallery = data.createModel(selection);
         if (data.getModelColumns() != null)
@@ -921,8 +919,8 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 			data.fillConstant(label, values[0]);
 		else
 		{
-			Double v1 = Double.parseDouble(values[0]);
-			Double v2 = Double.parseDouble(values[1]);
+			double v1 = Double.parseDouble(values[0]);
+			double v2 = Double.parseDouble(values[1]);
 			if (mode.equalsIgnoreCase(MetaData.FILL_LINEAR))
 				data.fillLinear(label, v1, v2);
 			else if (mode.equalsIgnoreCase(MetaData.FILL_RAND_UNIFORM))
@@ -1950,7 +1948,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 		protected int col;
 
 		@Override
-		protected void createItems() throws Exception
+		protected void createItems()
 		{
 			addItem(ENABLED, "Enable", "enable.gif");
 			addItem(DISABLED, "Disable", "disable.gif");
@@ -2018,119 +2016,103 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 		protected void handleActionPerformed(ActionEvent evt)
 		{
 			String cmd = evt.getActionCommand();
-			if (cmd.equals(SELECT_ALL))
-			{
-				selectRange(0, gallery.getSize() - 1);
-			}
-			else if (cmd.equals(SELECT_TOHERE))
-			{
-				selectRange(0, gallery.getIndex(row, col));
-			}
-			else if (cmd.equals(SELECT_FROMHERE))
-			{
-				selectRange(gallery.getIndex(row, col), gallery.getSize() - 1);
-			}
-            else if (cmd.equals(INVERT_SELECT))
-			{
-				for (int i = 0; i < data.size(); i++)
-                    gallery.setSelected(i, !gallery.isSelected(i));
-                gallery.fireTableDataChanged();
-                jsGoToImage.setValue(gallery.getSelTo() + 1);
-			}
-			else if (cmd.equals(ENABLED))
-			{
-				gallery.setSelectionEnabled(true);
-				// gallery.clearSelection();
-				refreshExtractFrame();
+			switch (cmd) {
+				case SELECT_ALL:
+					selectRange(0, gallery.getSize() - 1);
+					break;
+				case SELECT_TOHERE:
+					selectRange(0, gallery.getIndex(row, col));
+					break;
+				case SELECT_FROMHERE:
+					selectRange(gallery.getIndex(row, col), gallery.getSize() - 1);
+					break;
+				case INVERT_SELECT:
+					for (int i = 0; i < data.size(); i++)
+						gallery.setSelected(i, !gallery.isSelected(i));
+					gallery.fireTableDataChanged();
+					jsGoToImage.setValue(gallery.getSelTo() + 1);
+					break;
+				case ENABLED:
+					gallery.setSelectionEnabled(true);
+					// gallery.clearSelection();
+					refreshExtractFrame();
 
-			}
-			else if (cmd.equals(DISABLED))
-			{
-				gallery.setSelectionEnabled(false);
-				// gallery.clearSelection();
-				refreshExtractFrame();
+					break;
+				case DISABLED:
+					gallery.setSelectionEnabled(false);
+					// gallery.clearSelection();
+					refreshExtractFrame();
 
-			}
-			else if (cmd.equals(REFRESH))
-			{
-				gallery.refreshAt(row, col);
-			}
-			else if (cmd.equals(OPEN))
-			{
-				
-                ColumnInfo ci = gallery.getColumn(row, col);
-                if (ci.allowRender)
-                    gallery.handleDoubleClick(row, col);
-                else
-                {
-                    int index = gallery.getIndex(row, col);
-                    String file = data.getValueFromCol(index, ci);
-                    ImagesWindowFactory.openFileAsDefault(file);
-                }
-			}
-			else if (cmd.equals(OPEN_ASTEXT))
-			{
-				String file = gallery.getValueAt(row, col).toString();
-				ImagesWindowFactory.openFileAsText(file, null);
-			}
-			else if (cmd.equals(CTF_PROFILE))
-			{
-                                int index = gallery.getIndex(row, col);
-				data.showCTF(true, index, gallery.getSelection(), ctfTasks);
-			}
-			else if (cmd.equals(CTF_RECALCULATE))
-			{
-                boolean isrecalculate = getItemSelected(CTF_RECALCULATE);
-                int index = gallery.getIndex(row, col);
-                if(isrecalculate && !data.isEnabled(index))
-                    XmippDialog.showInfo(GalleryJFrame.this, "You must enable micrograph to recalculate its CTF");
-                else
-                {
-                    if(isrecalculate)
-                        data.showCTF(false, index, gallery.getSelection(), ctfTasks);
-                    else
-                        data.removeCTF(row);
-                }
-                                
-			}
-			else if (cmd.equals(SET_CLASS))
-			{
-				if (openClassesDialog())
-				{
-					int classNumber = dlgClasses.getSelectedClass();
-					// DEBUG.printMessage(String.format("class: %d",
-					// classNumber));
-					gallery.setSelectionClass(classNumber);
+					break;
+				case REFRESH:
+					gallery.refreshAt(row, col);
+					break;
+				case OPEN:
+
+					ColumnInfo ci = gallery.getColumn(row, col);
+					if (ci.allowRender)
+						gallery.handleDoubleClick(row, col);
+					else {
+						int index = gallery.getIndex(row, col);
+						String file = data.getValueFromCol(index, ci);
+						ImagesWindowFactory.openFileAsDefault(file);
+					}
+					break;
+				case OPEN_ASTEXT:
+					String file = gallery.getValueAt(row, col).toString();
+					ImagesWindowFactory.openFileAsText(file, null);
+					break;
+				case CTF_PROFILE: {
+					int index = gallery.getIndex(row, col);
+					data.showCTF(true, index, gallery.getSelection(), ctfTasks);
+					break;
 				}
+				case CTF_RECALCULATE: {
+					boolean isrecalculate = getItemSelected(CTF_RECALCULATE);
+					int index = gallery.getIndex(row, col);
+					if (isrecalculate && !data.isEnabled(index))
+						XmippDialog.showInfo(GalleryJFrame.this, "You must enable micrograph to recalculate its CTF");
+					else {
+						if (isrecalculate)
+							data.showCTF(false, index, gallery.getSelection(), ctfTasks);
+						else
+							data.removeCTF(row);
+					}
+
+					break;
+				}
+				case SET_CLASS:
+					if (openClassesDialog()) {
+						int classNumber = dlgClasses.getSelectedClass();
+						// DEBUG.printMessage(String.format("class: %d",
+						// classNumber));
+						gallery.setSelectionClass(classNumber);
+					}
+					break;
+				case OPEN_IMAGES: {
+					int index = gallery.getIndex(row, col);
+					MetaData md = data.getClassImages(index);
+					if (md != null)
+						openMetadata(md);
+					else
+						XmippDialog.showWarning(GalleryJFrame.this, "This class has no images");
+					break;
+				}
+				case SAVE_IMAGES:
+					if (gallery.hasSelection()) {
+						File f = new File(data.getFileName());
+						SaveImagesJDialog dialog = new SaveImagesJDialog(GalleryJFrame.this, f.getParent() + "/images_selection.xmd");
+						dialog.showDialog();
+					}
+					break;
+				default:
+					String objectCommand = cmd.replace("_mi", "");
+					if (data.isObjectCmd(objectCommand)) {
+						int index = gallery.getIndex(row, col);
+						data.runObjectCommand(index, objectCommand);
+					}
+					break;
 			}
-			else if (cmd.equals(OPEN_IMAGES))
-			{
-				int index = gallery.getIndex(row, col);
-				MetaData md = data.getClassImages(index);
-				if (md != null)
-					openMetadata(md);
-				else
-					XmippDialog.showWarning(GalleryJFrame.this, "This class has no images");
-			}
-			else if (cmd.equals(SAVE_IMAGES))
-			{
-                            if(gallery.hasSelection())
-                            {
-				File f = new File(data.getFileName());
-				SaveImagesJDialog dialog = new SaveImagesJDialog(GalleryJFrame.this, f.getParent() + "/images_selection.xmd");
-				dialog.showDialog();					
-                            }
-			}
-                        
-            else 
-            {
-                String objectCommand = cmd.replace("_mi", "");
-                if (data.isObjectCmd(objectCommand))
-                {
-                    int index = gallery.getIndex(row, col);
-                    data.runObjectCommand(index, objectCommand);
-                }
-            }
 			initItems();
 
 		}
@@ -2168,7 +2150,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 	@Override
 	public void done()
 	{
-		XmippDialog.showInfo(this, String.format("Calculating ctf: DONE"));
+		XmippDialog.showInfo(this, "Calculating ctf: DONE");
 	}
 
 	protected void saveMd() throws Exception
@@ -2178,14 +2160,14 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
         
       
 
-	protected void saveMd(String path, boolean saveall, boolean isoverwrite, boolean reload) throws Exception
+	protected void saveMd(String path, boolean saveall, boolean isoverwrite, boolean reload)
 	{
 		try
 		{
 			data.saveMd(path, saveall, isoverwrite);
             String file;
             if (path.contains("@"))
-                    file = path.substring(path.lastIndexOf("@") + 1, path.length());
+                    file = path.substring(path.lastIndexOf("@") + 1);
             else
             {
                     file = path;
@@ -2256,7 +2238,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 
 	}
         
-    private void exportImages() throws Exception
+    private void exportImages()
 	{
 		SwingUtilities.invokeLater(new Runnable() {
 
@@ -2367,7 +2349,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 
 	public Map<Object, Object> getKeyAssist()
 	{
-		Map<Object, Object> map = Collections.synchronizedMap(new LinkedHashMap<Object, Object>());
+		Map<Object, Object> map = Collections.synchronizedMap(new LinkedHashMap<>());
 		map.put("Shift + scroll up/ctrl + P", "Zoom in if images displayed");
 		map.put("Shift + scroll down/ctrl + M", "Zoom out if images displayed");
 		map.put("Left click", "Selects a cell in gallery mode and a row in table mode");
@@ -2410,18 +2392,22 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
                         XmippDialog.showError(GalleryJFrame.this, "Scipion is not available");
                         return;
                     }
-                    
-                        
-                    String run = String.format("python %s%2$spyworkflow%2$sapps%2$spw_chimera_client.py projector --input %3$s ", scipionHome, File.separator, file);
-                    
-                    if(data.parameters.getSamplingRate() != null)
-                        run += String.format(" --samplingRate %s", data.parameters.getSamplingRate());
-                    if(link)
-                    {
-                        int port = XmippUtil.findFreePort();
-                        data.parameters.setChimeraPort(port);
-                        run += "--showjPort " + port;
-                    }
+
+                    // There must be a better way to "clean" :mrc annotations
+					if(file.endsWith(":mrc"))
+						file = file.replace(":mrcs", "");
+
+                    String run = String.format("python -m scipion run emchimera  %1$s ", file);
+//Chimera launch simplified until working properly as a client-server communitation
+//					  String run = String.format("python %s%2$spyworkflow%2$sapps%2$spw_chimera_client.py projector --input %3$s ", scipionHome, File.separator, file);
+//                    if(data.parameters.getSamplingRate() != null)
+//                        run += String.format(" --samplingRate %s", data.parameters.getSamplingRate());
+//                    if(link)
+//                    {
+//                        int port = XmippUtil.findFreePort();
+//                        data.parameters.setChimeraPort(port);
+//                        run += "--showjPort " + port;
+//                    }
                     String output = XmippWindowUtil.executeCommand(run, false);
                     //System.out.println(output);
 
