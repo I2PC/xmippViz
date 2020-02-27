@@ -62,7 +62,7 @@ def parms(target, source, env):
 
     out = env.get('MakeStdOut')
 
-    return (make_path, make_env, make_targets, make_cmd, make_jobs, make_opts, out)
+    return make_path, make_env, make_targets, make_cmd, make_jobs, make_opts, out
 
 
 def message(target, source, env):
@@ -88,15 +88,15 @@ def message(target, source, env):
                            target=target, source=source, raw=1) + " > %s " % out
 
     msg = 'cd ' + make_path + ' &&'
-    if make_env != None:
-        for k, v in make_env.iteritems():
+    if make_env is not None:
+        for k, v in make_env.items():
             msg += ' ' + k + '=' + v
     msg += ' ' + make_cmd
     if make_jobs > 1:
         msg += ' -j %d' % make_jobs
-    if make_opts != None:
+    if make_opts is not None:
         msg += ' ' + ' '.join(make_opts)
-    if make_targets != None:
+    if make_targets is not None:
         msg += ' ' + make_targets
     return msg
 
@@ -151,6 +151,6 @@ def generate(env, **kwargs):
 
 
 def exists(env):
-    if env.WhereIs(env.subst('$MAKE')) != None:
+    if env.WhereIs(env.subst('$MAKE')) is not None:
         return True
     return False
