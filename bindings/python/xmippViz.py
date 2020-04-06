@@ -1,6 +1,5 @@
-
-
 import os
+import platform
 from .xmipp_base import XmippScript, xmippExists, getXmippPath
 
 
@@ -114,7 +113,8 @@ class ScriptShowJ(ScriptAppIJ):
         self.addParamsLine('  [--mode <mode_value=image>]           : List of params ')
         self.addParamsLine('     where <mode_value> image gallery metadata rotspectra')
         self.addParamsLine('         alias -d;')
-        self.addParamsLine('  [--poll]                            : Keeps checking for changes on input files  (for image mode only!)')
+        self.addParamsLine(
+            '  [--poll]                            : Keeps checking for changes on input files  (for image mode only!)')
         self.addParamsLine('         alias -p;')
         self.addParamsLine('  [--render <...>]    : Specifies image columns to render (for metadata mode only)')
         self.addParamsLine('                          : by default the first one that can be visualized is rendered')
@@ -132,7 +132,8 @@ class ScriptShowJ(ScriptAppIJ):
         self.addParamsLine('         alias -z;')
         self.addParamsLine('  [--view <axis="z">]                        : Viewer position (for volumes only)')
         self.addParamsLine('     where <axis> z y x z_pos y_pos x_pos')
-        self.addParamsLine('  [--dont_apply_geo]                        : Does not read geometrical information(for metadata only)')
+        self.addParamsLine(
+            '  [--dont_apply_geo]                        : Does not read geometrical information(for metadata only)')
         self.addParamsLine('  [--dont_wrap]                             : Does not wrap (for metadata only)')
         self.addParamsLine('  [--debug] : debug')
         self.addParamsLine('  [--mask_toolbar] : Open mask toolbar (only valid for images)')
