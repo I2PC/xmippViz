@@ -34,14 +34,11 @@ import os
 import sys
 import shutil
 from os.path import join
-try:
-    from itertools import izip
-except:
-    izip = zip
+from itertools import izip
 from glob import glob
 import fnmatch
 import platform
-from SCons import SConf, Node, Script
+import SCons.SConf
 try:
     from ConfigParser import ConfigParser, ParsingError
 except ImportError:
@@ -59,8 +56,8 @@ elif MACOSX:
     download = Builder(action='curl -L "$SOURCE" -o "$TARGET"')
     untar = Builder(action='tar -C $cdir -xzf $SOURCE')
 else:
-    print('OS not tested yet')
-    sys.exit(1)
+    print 'OS not tested yet'
+    Exit(1)
 
 
 # Create the environment the whole build will use.
@@ -92,10 +89,10 @@ if LINUX:
 elif MACOSX:
     env.AppendUnique(LIBPATH=os.environ.get('DYLD_FALLBACK_LIBRARY_PATH', ''))
 elif WINDOWS:
-    print("OS not tested yet")
-    sys.exit(1)
+    print "OS not tested yet"
+    Exit(1)
 else:
-    print("Unknown system: %s\nPlease tell the developers." % platform.system())
+    print "Unknown system: %s\nPlease tell the developers." % platform.system()
 
 
 # Python and SCons versions are fixed
@@ -115,7 +112,7 @@ else:
 def appendUnique(elist, element):
     'Add element to a list only if it doesnt previously exist'
     if element not in elist:
-        if not isinstance(element, str):
+        if not isinstance(element, basestring):
             elist.extend(element)
         else:
             elist.append(element)
@@ -298,15 +295,16 @@ def symLink(env, target, source):
     #As the link will be in bin/ directory we need to move up
     sources = source
     current = Dir('.').path+'/'
-    if isinstance(target, Node.NodeList) or isinstance(target, list):
+    import SCons
+    if isinstance(target, SCons.Node.NodeList) or isinstance(target, list):
         link = target[0].path
     else:
         link = target
-    if isinstance(link, str) and link.startswith(current):
+    if isinstance(link, basestring) and link.startswith(current):
         link = link.split(current)[1]
-    if isinstance(sources, Node.NodeList) or isinstance(sources, list):
+    if isinstance(sources, SCons.Node.NodeList) or isinstance(sources, list):
         sources = source[0].path
-    if isinstance(sources, str) and sources.startswith(current):
+    if isinstance(sources, basestring) and sources.startswith(current):
         sources = sources.split(current)[1]
 
     sources = os.path.relpath(sources, os.path.split(link)[0])
@@ -324,7 +322,7 @@ def symLink(env, target, source):
 
 
 def Cmd(cmd):
-    print(cmd)
+    print cmd
     os.system(cmd)
 
 
@@ -352,7 +350,7 @@ def CreateFileList(path, pattern, filename, root='', root2=''):
 def CompileJavaJar(target, source, env):  
     """Add self-made and compiled java library to the compilation process """  
     srcDir = str(source[0])
-    print("Compiling jar: ", target[0])
+    print "Compiling jar: ", target[0]
     buildDir = join(env['PACKAGE']['SCONSCRIPT'], env['JAVA_BUILDPATH'])
     classPath = "'%s/*'" % join(env['PACKAGE']['SCONSCRIPT'], env['JAVA_LIBPATH'])
     globalSrcDir = join(env['PACKAGE']['SCONSCRIPT'], env['JAVA_SOURCEPATH'])
@@ -490,7 +488,7 @@ env.SConscript('SConscript', exports='env')
 
 # Add original help (the one that we would have if we didn't use
 # Help() before). But remove the "usage:" part (first line).
-phelp = Script.Main.OptionsParser.format_help().split('\n')
+phelp = SCons.Script.Main.OptionsParser.format_help().split('\n')
 Help('\n'.join(phelp[1:]))
 # This is kind of a hack, because the #@!^ scons doesn't give you easy
 # access to the original help message.

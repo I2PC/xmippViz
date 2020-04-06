@@ -22,12 +22,12 @@ class ChimeraServer:
         self.address = ''
         #self.port = int(environ['XMIPP_CHIMERA_PORT'])
         self.port = 6000
-        print(sys.argv)
+        print sys.argv
         if len(sys.argv) > 2:#java case only
             self.port = int(sys.argv[2]) 
         elif len(sys.argv) > 1 and not 'xmipp_chimera_server.py' in sys.argv[1]:#avoid java case without port
             self.port = int(sys.argv[1]) 
-        print(self.port)
+        print self.port
         self.authkey = 'test'
         self.listener = Listener((self.address, self.port), authkey=self.authkey) 
         self.remote_conn = self.listener.accept()
