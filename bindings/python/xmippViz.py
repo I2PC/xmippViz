@@ -1,7 +1,7 @@
 
 
 import os
-from xmipp_base import XmippScript, xmippExists, getXmippPath
+from .xmipp_base import XmippScript, xmippExists, getXmippPath
 
 
 class ScriptIJBase(XmippScript):
