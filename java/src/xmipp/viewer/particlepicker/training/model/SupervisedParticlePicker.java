@@ -386,7 +386,7 @@ public class SupervisedParticlePicker extends ParticlePicker
 			String selfile = getMicrographsSelFile();
 			MetaData md = new MetaData(selfile);
                         
-			//md.removeDisabled();
+			md.removeDisabled();
                         
 			int fileLabel;
 			if (md.containsLabel(MDLabel.MDL_MICROGRAPH))
