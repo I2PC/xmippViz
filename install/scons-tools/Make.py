@@ -89,7 +89,7 @@ def message(target, source, env):
 
     msg = 'cd ' + make_path + ' &&'
     if make_env is not None:
-        for k, v in make_env.items():
+        for k, v in make_env.iteritems():
             msg += ' ' + k + '=' + v
     msg += ' ' + make_cmd
     if make_jobs > 1:
