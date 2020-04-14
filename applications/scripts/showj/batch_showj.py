@@ -1,6 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-from bindings.python.xmippViz import ScriptShowJ
+from xmippViz import ScriptShowJ
         
 if __name__ == '__main__':
     ScriptShowJ().tryRun()
