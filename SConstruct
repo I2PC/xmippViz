@@ -48,7 +48,7 @@ try:
     from ConfigParser import ConfigParser, ParsingError
 except ImportError:
     from configparser import ConfigParser, ParsingError  # Python 3
-    
+
 MACOSX = (platform.system() == 'Darwin')
 WINDOWS = (platform.system() == 'Windows')
 LINUX = (platform.system() == 'Linux')
@@ -81,7 +81,7 @@ if not GetOption('verbose'):
     env['AUTOCONFIGCOMSTR'] = "Configuring $TARGET from $SOURCES"
     env['MAKECOMSTR'] = "Compiling & installing $TARGET from $SOURCES "
 
-    
+
 def targetInBuild(env, targetName):
     return targetName in map(str, BUILD_TARGETS)
 
@@ -139,7 +139,6 @@ if not 'BUILD' in cf.sections():
     print("Cannot find section BUILD in install/xmipp.conf")
 os.environ.update(dict(cf.items('BUILD')))
 
-
 env['CPPPATH'] = os.environ.get('CPPPATH', [])
 env['CC'] = os.environ.get('CC')
 env['CXX'] = os.environ.get('CXX')
@@ -156,7 +155,6 @@ env['CXXFLAGS'] = cxxFlags.split()
 os.environ['CXXFLAGS'] = cxxFlags  # FIXME use only env or os.environ in the rest of the code
 env['LINKFLAGS'] = os.environ.get('LINKFLAGS', '').split()
 
-
 for path in ['JAVA_HOME', 'JAVA_BINDIR']:
     if not os.path.isdir(os.environ.get(path, '')):
         Exit('Path to $%s (%s) should exist, but it does not. Stopping.\n'
@@ -170,11 +168,10 @@ env['JAVAC'] = os.environ.get('JAVAC')
 env['JAR'] = os.environ.get('JAR')
 env['JNI_CPPPATH'] = os.environ.get('JNI_CPPPATH').split(':')
 
-
 xmippPath = Dir('.').abspath
 env['PACKAGE'] = {'NAME': 'xmipp',
                   'SCONSCRIPT': xmippPath
-                 }
+                  }
 
 
 #  ************************************************************************
@@ -185,6 +182,7 @@ env['PACKAGE'] = {'NAME': 'xmipp',
 
 def remove_prefix(text, prefix):
     return text[text.startswith(prefix) and len(prefix):]
+
 
 env['INCDIRFLAGS'] = os.environ.get('INCDIRFLAGS', '').split()
 env['LIBDIRFLAGS'] = os.environ.get('LIBDIRFLAGS', '').split()
@@ -197,7 +195,7 @@ else:
 if len(env["LIBDIRFLAGS"]) > 0:
     external_libdirs = [remove_prefix(os.path.expandvars(x), "-L") for x in env["LIBDIRFLAGS"]]
 else:
-    external_libdirs = []    
+    external_libdirs = []
 
 env['EXTERNAL_INCDIRS'] = external_incdirs
 env['EXTERNAL_LIBDIRS'] = external_libdirs
@@ -230,14 +228,14 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
     lastTarget = deps
     prefix = 'lib' if prefix is None else prefix
     suffix = '.so' if suffix is None else suffix
-    
+
     basedir = 'lib'
     targetName = join(basedir, target if target else prefix + name)
     sources = []
 
     for d, p in izip(dirs, patterns):
         sources += glob(join(env['PACKAGE']['SCONSCRIPT'], d, p))
-        
+
     if not sources and env.TargetInBuild(name):
         Exit('No sources found for Library: %s. Exiting!!!' % name)
 
@@ -247,9 +245,9 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
     mpiArgs = {}
     if mpi:
         _libpath.append(env['MPI_LIBDIR'])
-        _libs.append(env['MPI_LIB']) 
+        _libs.append(env['MPI_LIB'])
         _incs.append(env['MPI_INCLUDE'])
-               
+
         mpiArgs = {'CC': env['MPI_CC'],
                    'CXX': env['MPI_CXX'],
                    'LINK': env['MPI_LINKERFORPROGRAMS']}
@@ -261,7 +259,6 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
         #             Exit(1)
         #         env = conf.Finish()
         env2.PrependENVPath('PATH', env['MPI_BINDIR'])
-    
 
     _incs.append(env['CPPPATH'])
 
@@ -280,7 +277,7 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
     )
     SideEffect('dummy', library)
     env.Depends(library, sources)
-    
+
     if installDir:
         install = env.Install(installDir, library)
         SideEffect('dummy', install)

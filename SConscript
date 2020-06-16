@@ -90,7 +90,6 @@ addLib('XmippJNI',
        libs=['pthread', 'XmippCore', 'Xmipp'],
        libpath=["%s/xmippCore/lib" % XMIPP_BUNDLE, "%s/xmipp/lib" % XMIPP_BUNDLE])
 
-
 #  ***********************************************************************
 #  *                      Java Libraries                                 *
 #  ***********************************************************************
@@ -212,7 +211,6 @@ xmippViewer = env.AddJavaLibrary(
 xmippTest = env.AddJavaLibrary(
     'XmippTest', 'xmipp/test',
     deps=[xmippViewer])
-
 
 # FIXME: the environment used for the rest of SCons is imposible to
 # use to compile java code. Why?

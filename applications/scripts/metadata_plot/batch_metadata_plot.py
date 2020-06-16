@@ -105,21 +105,20 @@ class ScriptPlotMetadata(XmippScript):
             ylabel = self.getParam('--ytitle')
         else:
             ylabel = ylabels[0]
-        
+
         colors, lenColors = self.getList('--colors', ['g', 'b', 'r', 'y', 'c', 'm', 'k'])
         markers, lenMarkers = self.getList('--markers')
         styles, lenStyles = self.getList('--style')
-        
+
         if self.checkParam('--nbins'):
             nBins = self.getIntParam('--nbins')
         else:
             nBins = None
-            
-        
+
         title = self.getParam('--title')
         xplotter = XmippPlotter()
         xplotter.createSubPlot(title, xlabel, ylabel)
-        
+
         for i, l in enumerate(ylabels):
             c = colors[i % lenColors]
             m = markers[i % lenMarkers]
