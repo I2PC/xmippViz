@@ -34,11 +34,16 @@ import os
 import sys
 import shutil
 from os.path import join
-from itertools import izip
+
+try:
+    from itertools import izip
+except:
+    izip = zip
 from glob import glob
 import fnmatch
 import platform
-import SCons.SConf
+from SCons import SConf, Node, Script
+
 try:
     from ConfigParser import ConfigParser, ParsingError
 except ImportError:
@@ -56,9 +61,8 @@ elif MACOSX:
     download = Builder(action='curl -L "$SOURCE" -o "$TARGET"')
     untar = Builder(action='tar -C $cdir -xzf $SOURCE')
 else:
-    print 'OS not tested yet'
-    Exit(1)
-
+    print('OS not tested yet')
+    sys.exit(1)
 
 # Create the environment the whole build will use.
 env = Environment(ENV=os.environ,
@@ -89,15 +93,15 @@ if LINUX:
 elif MACOSX:
     env.AppendUnique(LIBPATH=os.environ.get('DYLD_FALLBACK_LIBRARY_PATH', ''))
 elif WINDOWS:
-    print "OS not tested yet"
-    Exit(1)
+    print("OS not tested yet")
+    sys.exit(1)
 else:
-    print "Unknown system: %s\nPlease tell the developers." % platform.system()
+    print("Unknown system: %s\nPlease tell the developers." % platform.system())
 
 
 # Python and SCons versions are fixed
-#env.EnsurePythonVersion(2,7)
-#env.EnsureSConsVersion(2,3,2)
+# env.EnsurePythonVersion(2,7)
+# env.EnsureSConsVersion(2,3,2)
 # TODO: see after all is clean and crispy if we can avoid fixing the versions.
 # We can specify a range of valid version after we check it works with them.
 
@@ -110,9 +114,9 @@ else:
 
 
 def appendUnique(elist, element):
-    'Add element to a list only if it doesnt previously exist'
+    """Add element to a list only if it doesnt previously exist"""
     if element not in elist:
-        if not isinstance(element, basestring):
+        if not isinstance(element, str):
             elist.extend(element)
         else:
             elist.append(element)
@@ -128,7 +132,7 @@ cf.optionxform = str  # keep case (stackoverflow.com/questions/1611799)
 try:
     if not os.path.exists("install/xmipp.conf"):
         shutil.copy("install/xmipp.template", "install/xmipp.conf")
-    cf.read("install/xmipp.conf")        
+    cf.read("install/xmipp.conf")
 except ParsingError:
     sys.exit("%s\nPlease fix the configuration file install/xmipp.conf." % sys.exc_info()[1])
 if not 'BUILD' in cf.sections():
@@ -141,14 +145,15 @@ env['CC'] = os.environ.get('CC')
 env['CXX'] = os.environ.get('CXX')
 env['LINKERFORPROGRAMS'] = os.environ.get('LINKERFORPROGRAMS')
 env['CCFLAGS'] = os.environ.get('CCFLAGS', '').split()
-cxxFlags = os.environ.get('CXXFLAGS', '') 
-if os.environ.get('DEBUG', '0') == 'True': #FIXME, use 1, true, yes...
-   cxxFlags += ' -g'
+cxxFlags = os.environ.get('CXXFLAGS', '')
+if os.environ.get('DEBUG', '0') == 'True':  # FIXME, use 1, true, yes...
+    cxxFlags += ' -g'
 else:
-    if cxxFlags.find("-O")==-1:
-        cxxFlags += (" -O3" if 'TRAVIS' not in os.environ else " -O0") #don't optimize on Travis, as it slows down the build
+    if cxxFlags.find("-O") == -1:
+        cxxFlags += (
+            " -O3" if 'TRAVIS' not in os.environ else " -O0")  # don't optimize on Travis, as it slows down the build
 env['CXXFLAGS'] = cxxFlags.split()
-os.environ['CXXFLAGS'] = cxxFlags # FIXME use only env or os.environ in the rest of the code
+os.environ['CXXFLAGS'] = cxxFlags  # FIXME use only env or os.environ in the rest of the code
 env['LINKFLAGS'] = os.environ.get('LINKFLAGS', '').split()
 
 
@@ -184,22 +189,23 @@ def remove_prefix(text, prefix):
 env['INCDIRFLAGS'] = os.environ.get('INCDIRFLAGS', '').split()
 env['LIBDIRFLAGS'] = os.environ.get('LIBDIRFLAGS', '').split()
 
-if len(env["INCDIRFLAGS"])>0:
-    external_incdirs = [remove_prefix(os.path.expandvars(x),"-I") for x in env["INCDIRFLAGS"]]
+if len(env["INCDIRFLAGS"]) > 0:
+    external_incdirs = [remove_prefix(os.path.expandvars(x), "-I") for x in env["INCDIRFLAGS"]]
 else:
     external_incdirs = []
 
-if len(env["LIBDIRFLAGS"])>0:
-    external_libdirs = [remove_prefix(os.path.expandvars(x),"-L") for x in env["LIBDIRFLAGS"]]
+if len(env["LIBDIRFLAGS"]) > 0:
+    external_libdirs = [remove_prefix(os.path.expandvars(x), "-L") for x in env["LIBDIRFLAGS"]]
 else:
     external_libdirs = []    
 
 env['EXTERNAL_INCDIRS'] = external_incdirs
 env['EXTERNAL_LIBDIRS'] = external_libdirs
 
-def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patterns=[], incs=[], 
-                      libs=[], prefix=None, suffix=None, installDir=None, libpath=['lib'], deps=[], 
-                      mpi=False, cuda=False, default=True, target=None):
+
+def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patterns=[], incs=[],
+                  libs=[], prefix=None, suffix=None, installDir=None, libpath=['lib'], deps=[],
+                  mpi=False, cuda=False, default=True, target=None):
     """Add self-made and compiled shared library to the compilation process
     
     This pseudobuilder access given directory, compiles it
@@ -211,16 +217,16 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
     Returns the final targets, the ones that Make will create.
     """
     _libs = list(libs)
-    _libpath = list(libpath)+external_libdirs
+    _libpath = list(libpath) + external_libdirs
     if name == "XmippReconsAdaptCuda":
         _libs.append("XmippReconsCuda")
         _libs.append("cudart")
         _libs.append("cuda")
         _libs.append("cufft")
         _libpath.append(env['CUDA_LIB'])
-    if name == "XmippParallel" and cuda==True:
+    if name == "XmippParallel" and cuda == True:
         _libs.append("XmippReconsAdaptCuda")
-    _incs = list(incs)+external_incdirs
+    _incs = list(incs) + external_incdirs
     lastTarget = deps
     prefix = 'lib' if prefix is None else prefix
     suffix = '.so' if suffix is None else suffix
@@ -247,31 +253,31 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
         mpiArgs = {'CC': env['MPI_CC'],
                    'CXX': env['MPI_CXX'],
                    'LINK': env['MPI_LINKERFORPROGRAMS']}
-#         conf = Configure(env, custom_tests = {'CheckMPI': CheckMPI})
-#         if not conf.CheckMPI(env['MPI_INCLUDE'], env['MPI_LIBDIR'], 
-#                              env['MPI_LIB'], env['MPI_CC'], env['MPI_CXX'], 
-#                              env['MPI_LINKERFORPROGRAMS'], False):
-#             print >> sys.stderr, 'ERROR: MPI is not properly working. Exiting...'
-#             Exit(1)
-#         env = conf.Finish()
+        #         conf = Configure(env, custom_tests = {'CheckMPI': CheckMPI})
+        #         if not conf.CheckMPI(env['MPI_INCLUDE'], env['MPI_LIBDIR'],
+        #                              env['MPI_LIB'], env['MPI_CC'], env['MPI_CXX'],
+        #                              env['MPI_LINKERFORPROGRAMS'], False):
+        #             print >> sys.stderr, 'ERROR: MPI is not properly working. Exiting...'
+        #             Exit(1)
+        #         env = conf.Finish()
         env2.PrependENVPath('PATH', env['MPI_BINDIR'])
     
 
     _incs.append(env['CPPPATH'])
 
     library = env2.SharedLibrary(
-              target=targetName,
-              #source=lastTarget,
-              source=sources,
-              CPPPATH=_incs,
-              LIBPATH=_libpath,
-              LIBS=_libs,
-              SHLIBPREFIX=prefix,
-              SHLIBSUFFIX=suffix,
-              CXXFLAGS=env['CXXFLAGS']+env['INCDIRFLAGS'],
-              LINKFLAGS=env['LINKFLAGS']+env['LIBDIRFLAGS'],
-              **mpiArgs
-              )
+        target=targetName,
+        # source=lastTarget,
+        source=sources,
+        CPPPATH=_incs,
+        LIBPATH=_libpath,
+        LIBS=_libs,
+        SHLIBPREFIX=prefix,
+        SHLIBSUFFIX=suffix,
+        CXXFLAGS=env['CXXFLAGS'] + env['INCDIRFLAGS'],
+        LINKFLAGS=env['LINKFLAGS'] + env['LIBDIRFLAGS'],
+        **mpiArgs
+    )
     SideEffect('dummy', library)
     env.Depends(library, sources)
     
@@ -292,29 +298,28 @@ def addCppLibrary(env, name, dirs=[], tars=[], untarTargets=['configure'], patte
 
 
 def symLink(env, target, source):
-    #As the link will be in bin/ directory we need to move up
+    # As the link will be in bin/ directory we need to move up
     sources = source
-    current = Dir('.').path+'/'
-    import SCons
-    if isinstance(target, SCons.Node.NodeList) or isinstance(target, list):
+    current = Dir('.').path + '/'
+    if isinstance(target, Node.NodeList) or isinstance(target, list):
         link = target[0].path
     else:
         link = target
-    if isinstance(link, basestring) and link.startswith(current):
+    if isinstance(link, str) and link.startswith(current):
         link = link.split(current)[1]
-    if isinstance(sources, SCons.Node.NodeList) or isinstance(sources, list):
+    if isinstance(sources, Node.NodeList) or isinstance(sources, list):
         sources = source[0].path
-    if isinstance(sources, basestring) and sources.startswith(current):
+    if isinstance(sources, str) and sources.startswith(current):
         sources = sources.split(current)[1]
 
     sources = os.path.relpath(sources, os.path.split(link)[0])
-    #if os.path.lexists(link):
+    # if os.path.lexists(link):
     #    os.remove(link)
-    #print 'Linking to %s from %s' % (sources, link)
-    #os.symlink(sources, link)
+    # print 'Linking to %s from %s' % (sources, link)
+    # os.symlink(sources, link)
     result = env.Command(Entry(link),
                          Entry(source),
-                         Action('rm -rf %s && ln -v -s %s %s' % (Entry(link).abspath, sources, 
+                         Action('rm -rf %s && ln -v -s %s %s' % (Entry(link).abspath, sources,
                                                                  Entry(link).abspath),
                                 'Creating a link from %s to %s' % (link, sources)))
     env.Default(result)
@@ -322,21 +327,28 @@ def symLink(env, target, source):
 
 
 def Cmd(cmd):
-    print cmd
+    print(cmd)
     os.system(cmd)
 
 
-def AddMatchingFiles((pattern, blacklist, sources), directory, files):
-    ''' Callback, adds all matching files in dir '''
-    for filename in fnmatch.filter(files, pattern):
-        if filename not in blacklist:
-            sources.append(join(directory, filename))
+def AddMatchingFiles(params, directory, files):
+    """ Callback, adds all matching files in dir
+        params[0] = pattern
+        params[1] = blacklist
+        params[2] = sources
+    """
+    for filename in fnmatch.filter(files, params[0]):
+        if filename not in params[1]:
+            params[2].append(join(directory, filename))
 
-    
+
 def Glob(path, pattern, blacklist=[]):
     """ Custom made globbing, walking into all subdirectories from path. """
     sources = []
-    os.path.walk(path, AddMatchingFiles, (pattern, blacklist, sources))
+    for root, dirs, files in os.walk(path):
+        for file in fnmatch.filter(files, pattern):
+            if file not in blacklist:
+                sources.append(join(root, file))
     return sources
 
 
@@ -345,22 +357,22 @@ def CreateFileList(path, pattern, filename, root='', root2=''):
     files = [f.replace(root, root2) + '\n' for f in Glob(path, pattern, [])]
     fOut.writelines(files)
     fOut.close()
-    
-    
-def CompileJavaJar(target, source, env):  
-    """Add self-made and compiled java library to the compilation process """  
+
+
+def CompileJavaJar(target, source, env):
+    """Add self-made and compiled java library to the compilation process """
     srcDir = str(source[0])
-    print "Compiling jar: ", target[0]
+    print("Compiling jar: ", target[0])
     buildDir = join(env['PACKAGE']['SCONSCRIPT'], env['JAVA_BUILDPATH'])
     classPath = "'%s/*'" % join(env['PACKAGE']['SCONSCRIPT'], env['JAVA_LIBPATH'])
     globalSrcDir = join(env['PACKAGE']['SCONSCRIPT'], env['JAVA_SOURCEPATH'])
     jarfile = str(target[0])
     name = os.path.basename(jarfile)
-    listfile = join(buildDir, name+'_source.txt')
-    classfile = join(buildDir, name+'_classes.txt')
+    listfile = join(buildDir, name + '_source.txt')
+    classfile = join(buildDir, name + '_classes.txt')
     CreateFileList(srcDir, '*.java', listfile)
     Cmd(env['JAVAC'] + ' -cp %(classPath)s -d %(buildDir)s -sourcepath %(srcDir)s @%(listfile)s' % locals())
-    
+
     classDir = join(buildDir, os.path.relpath(srcDir, globalSrcDir))
     # This is needed for compiling IJ plugins
     # where the file 'plugins.config' need to be include in the final .jar file
@@ -394,19 +406,19 @@ def addJavaLibrary(env, name, path, deps=[], default=True):
     jar = '%s.jar' % name
     jarfile = join(libPath, jar)
     jarCreation = env.Command(jarfile, [libSrcPath], CompileJavaJar)
-    
+
     for sd in sources + deps:
         env.Depends(jarCreation, sd)
 
     env.Alias(jar, jarCreation)
     if default:
         env.Default(jar)
-    
+
     packageName = env['PACKAGE']['NAME']
-    env.Alias(packageName+'-java', jarCreation)
-    
+    env.Alias(packageName + '-java', jarCreation)
+
     return jarCreation
-    
+
 
 def addJavaTest(env, name, source, installDir=None, default=True):
     """Add java test to the compilation process
@@ -421,12 +433,12 @@ def addJavaTest(env, name, source, installDir=None, default=True):
     if not env.TargetInBuild('run_java_tests'):
         return ''
     installDir = installDir or 'java/lib'
-    classPath = ":".join(glob(join(Dir(installDir).abspath,'*.jar')))
+    classPath = ":".join(glob(join(Dir(installDir).abspath, '*.jar')))
     cmd = '%s -cp %s org.junit.runner.JUnitCore xmipp.test.%s' % (join(env['JAVA_BINDIR'], 'java'), classPath, name)
     runTest = env.Command(name, join(installDir, source), cmd)
     env.Alias('run_java_tests', runTest)
     env.Default(runTest)
-    
+
     return runTest
 
 
@@ -467,12 +479,13 @@ def compilerConfig(env):
 
 def libraryTest(env, name, lang='c'):
     """Check the existence of a concrete C/C++ library."""
-    env2 = Environment(LIBS=env.get('LIBS',''))
+    env2 = Environment(LIBS=env.get('LIBS', ''))
     conf = Configure(env2)
     conf.CheckLib(name, language=lang)
     env2 = conf.Finish()
     # conf.Finish() returns the environment it used, and we may want to use it,
     # like:  return conf.Finish()  but we don't do that so we keep our env clean :)
+
 
 # Add methods so SConscript can call them.
 env.AddMethod(untar, 'Untar')
@@ -488,7 +501,7 @@ env.SConscript('SConscript', exports='env')
 
 # Add original help (the one that we would have if we didn't use
 # Help() before). But remove the "usage:" part (first line).
-phelp = SCons.Script.Main.OptionsParser.format_help().split('\n')
+phelp = Script.Main.OptionsParser.format_help().split('\n')
 Help('\n'.join(phelp[1:]))
 # This is kind of a hack, because the #@!^ scons doesn't give you easy
 # access to the original help message.

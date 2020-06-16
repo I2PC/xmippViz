@@ -33,7 +33,7 @@ from xmipp3 import XmippScript
 class ScriptPlotMetadata(XmippScript):
     def __init__(self):
         XmippScript.__init__(self)
-        
+
     def defineParams(self):
         self.addUsageLine('Plot some values from metadata.')
         ## params
@@ -64,7 +64,8 @@ class ScriptPlotMetadata(XmippScript):
         self.addExampleLine('Additionally take values for X from other label and set title', False)
         self.addExampleLine('xmipp_metadata_plot -i results.xmd -x iterationNumber -y sigmaNoise --title "My figure" ')
         self.addExampleLine('Plot different labels and select colors:', False)
-        self.addExampleLine('xmipp_metadata_plot -i results.xmd -x iterationNumber -y "sigmaNoise sigmaOffset iterationNumber" --title "My figure" --colors "yellow blue green"')
+        self.addExampleLine(
+            'xmipp_metadata_plot -i results.xmd -x iterationNumber -y "sigmaNoise sigmaOffset iterationNumber" --title "My figure" --colors "yellow blue green"')
         self.addExampleLine('Plot using dots:', False)
         self.addExampleLine('xmipp_metadata_plot -i results.xmd -x iterationNumber  \
         -y "sigmaNoise sigmaOffset iterationNumber" \
@@ -73,21 +74,22 @@ class ScriptPlotMetadata(XmippScript):
         self.addExampleLine('xmipp_metadata_plot -i results.xmd -x iterationNumber  \
         -y "sigmaNoise sigmaOffset iterationNumber" \
         --title "My figure" --colors "yellow-- blue. green.."')
-        self.addExampleLine('Colors, markers and style lines are described here: http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.plot', False)
+        self.addExampleLine(
+            'Colors, markers and style lines are described here: http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.plot',
+            False)
 
-    def getList(self, paramName, defaultValue=[None]):
-        '''Return list and len of it '''
+    def getList(self, paramName, defaultValue=[]):
+        """Return list and len of it """
         if self.checkParam(paramName):
             paramList = self.getParam(paramName).split()
         else:
             paramList = defaultValue
         return paramList, len(paramList)
-        
-        
-    def run(self):        
+
+    def run(self):
         from xmipp import MetaData, str2Label
-        from protlib_gui_figure import XmippPlotter        
-        
+        from protlib_gui_figure import XmippPlotter
+
         md = MetaData(self.getParam('-i'))
         if self.checkParam('--xlabel'):
             xlabel = self.getParam('--xlabel')
@@ -95,7 +97,7 @@ class ScriptPlotMetadata(XmippScript):
         else:
             xlabel = ""
             mdLabelX = None
-            
+
         if self.checkParam('--xtitle'):
             xlabel = self.getParam('--xtitle')
         ylabels = self.getParam('--ylabel').split()
@@ -126,8 +128,9 @@ class ScriptPlotMetadata(XmippScript):
             s = styles[i % lenStyles]
             if s == "none":
                 s = None
-            xplotter.plotMd(md, mdLabelX, str2Label(l), color=c, marker=m, linestyle=s, nbins=nBins)#if nbins is present do an histogram
-        
+            xplotter.plotMd(md, mdLabelX, str2Label(l), color=c, marker=m, linestyle=s,
+                            nbins=nBins)  # if nbins is present do an histogram
+
         legendLocation = self.getParam('--legend')
         if legendLocation != 'none':
             xplotter.showLegend(ylabels, loc=legendLocation.replace('_', ' '))
