@@ -253,7 +253,7 @@ public class TiltPairPickerJFrame extends ParticlePickerJFrame {
 	}
 
 	public int getParticleSize() {
-		return sizesl.getValue();
+		return (int) sizetf.getValue();
 	}
 
 	public Color getColor() {

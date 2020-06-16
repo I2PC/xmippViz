@@ -444,7 +444,6 @@ public class SupervisedPickerJFrame extends ParticlePickerJFrame {
         thresholdlb.setEnabled(selected);
         thresholdtf.setEnabled(selected);
         sizelb.setEnabled(!selected);
-        sizesl.setEnabled(!selected);// not really, if there is some micrograph
         // in sup mode size cannot be changed
         sizetf.setEnabled(!selected);
         sizelb.setEnabled(!selected);

@@ -10,11 +10,9 @@
 #                        Default: "Makefile.in"
 #    AutoConfigStdOut -- File where the output will be written to.
 #                        Default: None
-
+import sys
 from os.path import join, dirname
 import subprocess
-
-from SCons.Script import Exit
 
 
 def parms(target, source, env):
@@ -23,12 +21,12 @@ def parms(target, source, env):
     workdir = dirname(str(source[0]))
     params = env.get('AutoConfigParams', [])
     if not isinstance(params, list):
-        print 'AutoConfigParams must be a sequence'
-        Exit(1)
+        print('AutoConfigParams must be a sequence')
+        sys.exit(1)
     targetfile = env.get('AutoConfigTarget', 'config.h')
     sourcefile = env.get('AutoConfigSource', 'Makefile.in')
     out = env.get('AutoConfigStdOut')
-    return (workdir, params, targetfile, sourcefile, out)
+    return workdir, params, targetfile, sourcefile, out
 
 
 def message(target, source, env):
@@ -60,8 +58,8 @@ def emitter(target, source, env):
     # Since this emitter expects the incoming source[0] value to be a directory
     # name, we can use it here for the rewritten target[0].
 
-    return ([ join(str(source[0]), targetfile) ],
-            [ join(str(source[0]), sourcefile) ])
+    return ([join(str(source[0]), targetfile)],
+            [join(str(source[0]), sourcefile)])
 
 
 def builder(target, source, env):
