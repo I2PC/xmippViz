@@ -572,10 +572,13 @@ public abstract class ParticlePickerCanvas<P extends PickerParticle> extends Xmi
             if (getFrame().isEraserMode(e)){
                 getFrame().setEraserSize(getFrame().getEraserSize()+(e.getWheelRotation()*50));
                 paintEraser(e);
-            }
+            } else {
+				getFrame().processSizeMouseWheelEvent(e);
+			}
 
         } else {
             super.mouseWheelMoved(e);
+
         }
     }
 
