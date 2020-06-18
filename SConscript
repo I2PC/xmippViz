@@ -216,6 +216,7 @@ xmippTest = env.AddJavaLibrary(
 # use to compile java code. Why?
 # In the meanwhile we'll use an alternative environment.
 env2 = Environment(ENV=os.environ)
+env2['JAVAC'] = os.environ['JAVAC']
 env2.AppendUnique(JAVACLASSPATH='"%s/*"' % dpath('java/lib'))
 javaExtraFileTypes = env2.Java(epath('java/build/HandleExtraFileTypes.class'),
                                fpath('java/src/HandleExtraFileTypes.java'))
