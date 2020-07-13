@@ -88,7 +88,7 @@ public class XmippDialog extends JDialog implements ActionListener {
 			XmippWindowUtil.centerWindows(this);
 	}
 
-	protected void registerHotKeys(JButton btn, int keyStroke){
+	protected void registerHotKeys(final JButton btn, int keyStroke){
 		// Associate the escape with cancel
 		KeyStroke stroke = KeyStroke.getKeyStroke(keyStroke, 0);
 
