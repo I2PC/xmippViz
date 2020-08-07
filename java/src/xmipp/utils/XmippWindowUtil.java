@@ -294,8 +294,8 @@ public class XmippWindowUtil
 }
     
     public static String executeCommand(String command, boolean wait) throws Exception {
-            //System.out.println(command);
-            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", command });
+            DEBUG.printMessage(command);
+			Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", command });
             if(wait)
             {
                 p.waitFor();
@@ -317,6 +317,7 @@ public class XmippWindowUtil
             Socket socket = new Socket(hostName, port);
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            DEBUG.printMessage("Sending to socket: " + command);
             out.println(command);
             in.readLine();
             socket.close();
