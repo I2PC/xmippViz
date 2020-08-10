@@ -2403,8 +2403,12 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 				File f = new File(file);
 
 				String run = String.format(chimera_launcher, f.getAbsolutePath());
-				System.out.println("Launching chimera with " + run);
-				String output = XmippWindowUtil.executeCommand(run, false);
+				HashMap<String, String> chimeraEnv = new HashMap<String, String>() {
+					{
+						put("LD_LIBRARY_PATH", "");
+					}
+				};
+				String output = XmippWindowUtil.executeCommand(run, false, chimeraEnv);
 
             }
             catch (Exception ex)
