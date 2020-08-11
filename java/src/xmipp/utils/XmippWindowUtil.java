@@ -31,7 +31,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -42,7 +41,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -303,8 +305,41 @@ public class XmippWindowUtil
             }
             return null;
     }
-        
-    public static void runCommand(String command, Integer port) {
+
+    public static Map<String, String> env2Map(){
+
+		Map<String, String> editableEnv = new HashMap<>();
+
+		for (Map.Entry<String,String> var: System.getenv().entrySet()){
+			editableEnv.put(var.getKey(), var.getValue());
+		};
+		return editableEnv;
+	}
+	public static String executeCommand(String command, boolean wait , HashMap<String, String> envVars ) throws Exception {
+
+		Map<String,String> curentEnv = env2Map();
+
+		for (Map.Entry<String,String> newVar: envVars.entrySet()){
+			curentEnv.put(newVar.getKey(), newVar.getValue());
+		};
+
+		List<String> env2Exec = new ArrayList<String>();
+		for (Map.Entry<String,String> var: curentEnv.entrySet()){
+			env2Exec.add(var.getKey() + "=" + var.getValue());
+		};
+
+		DEBUG.printMessage(command);
+		Process p = Runtime.getRuntime().exec(command, env2Exec.toArray(new String[0]));
+		if(wait)
+		{
+			p.waitFor();
+			return readProcessOutput(p);
+		}
+		return null;
+
+	}
+
+	public static void runCommand(String command, Integer port) {
         //System.out.println(command);
     	if(port == null)
     	{
@@ -329,9 +364,7 @@ public class XmippWindowUtil
             System.err.println("Couldn't get I/O for the connection to " +
                 hostName);
         }
-        }
-
-
+	}
 
     public static String readProcessOutput(Process p) throws IOException
     {
