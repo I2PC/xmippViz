@@ -1,11 +1,10 @@
-//#include "xmipp_java_adapter.h"
 #include <jni.h>
 #include "xmipp_Projection.h"
-//#include "xmipp_ImageGeneric.h"
 #include "xmipp_ExceptionsHandler.h"
 #include "xmipp_InternalData.h"
 #include "core/xmipp_image.h"
 #include "core/matrix2d.h"
+#include "core/transformations.h"
 #include "data/fourier_projection.h"
 #include "data/projection.h"
 #include "data/filters.h"
