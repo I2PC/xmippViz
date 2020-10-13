@@ -1142,7 +1142,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 
 		if ( getChimera() == null){
 			chimerabt.setEnabled(false);
-			chimerabt.setToolTipText("Chimera not available, looking at " + CHIMERA_LAUNCHER);
+			chimerabt.setToolTipText("ChimeraX not available, looking at " + CHIMERA_LAUNCHER);
 		}
 
 		chimerabt.addActionListener(new ActionListener() {
@@ -1561,7 +1561,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 			addItem(FILE, "File");
 			addItem(FILE_OPEN, "Open ...", null, "control released O");
 			addItem(FILE_OPENWITH_IJ, "Open with ImageJ", "ij.gif", "control released J");
-			addItem(FILE_OPENWITH_CHIMERA, "Open with Chimera", "chimera.png", "control released H");
+			addItem(FILE_OPENWITH_CHIMERA, "Open with ChimeraX", "chimera.png", "control released H");
 			addItem(FILE_OPENMICROGRAPHS, "Open colored particles");
 			addItem(FILE_INFO, "File info ...");
 			addExtraMenuItems();
@@ -2390,7 +2390,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
 				String chimera_launcher = getChimera();
 				if(chimera_launcher == null)
 				{
-					XmippDialog.showError(GalleryJFrame.this, "Chimera is not available");
+					XmippDialog.showError(GalleryJFrame.this, "ChimeraX is not available");
 					return;
 				}
 
@@ -2426,7 +2426,7 @@ public class GalleryJFrame extends JFrame implements iCTFGUI
         	if(data.containsGeometryInfo("3D") || data.containsGeometryInfo("Projection") )
             {
                 fc.setApproveButtonText("Open");
-                fc.setDialogTitle("Open with Chimera");
+                fc.setDialogTitle("Open with ChimeraX");
                 fc.setApproveButtonToolTipText("Choose a chimera compatible file.");
                 int result = fc.showOpenDialog(GalleryJFrame.this);
                 if(result != XmippFileChooser.CANCEL_OPTION)
