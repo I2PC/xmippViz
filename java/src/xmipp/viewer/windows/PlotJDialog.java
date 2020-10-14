@@ -269,8 +269,7 @@ public class PlotJDialog extends XmippDialog
                 }
                 else
                 {
-                	String scipion = System.getenv("SCIPION_HOME");
-                	String pwplot = Filename.join(scipion, "pyworkflow", "apps", "pw_plot.py");
+                	String pwplot =  "python -m pyworkflow.apps.pw_plot";
                 	String cmd = String.format("%s --file %s --type %s --columns \"%s\" --orderColumn %s --orderDir %s --colors \"%s\" --styles \"%s\" --markers \"%s\""
                 			, pwplot, data.getFileName(), plotTypecb.getSelectedItem(), labels, orderColumn, orderDirection, colors, styles, markers);
                 	if(!data.getPreffix().isEmpty())
@@ -288,7 +287,6 @@ public class PlotJDialog extends XmippDialog
                 		cmd += " --xtitle " + getXLabel();
                 	if(!ylabel.isEmpty())
                 		cmd += " --ytitle " + ylabel;
-                	System.out.println(cmd);
                 	String output = XmippWindowUtil.executeCommand(cmd, false);
                 }
 

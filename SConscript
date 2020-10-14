@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # **************************************************************************
 # *
@@ -29,12 +29,9 @@
 
 import os
 from os.path import join
-from glob import glob
 from datetime import datetime
 
-
 Import('env')
-
 
 # Define some variables used by Scons. Note that some of
 # the variables will be passed by Scipion in the environment (env).
@@ -79,7 +76,7 @@ def addLib(name, **kwargs):
     patterns = kwargs.get('patterns', '*.cpp')
     kwargs['patterns'] = patterns
     lib = env.AddCppLibrary(name, **kwargs)
-    	
+
     env.Alias('xmipp-libs', lib)
 
     return lib
@@ -89,10 +86,9 @@ def addLib(name, **kwargs):
 addLib('XmippJNI',
        dirs=['bindings'],
        patterns=['java/*.cpp'],
-       incs=[env['JNI_CPPPATH'],"%s/xmippCore"%XMIPP_BUNDLE,"%s/xmipp/libraries"%XMIPP_BUNDLE],
-       libs=['pthread', 'XmippCore','Xmipp'],
-       libpath=["%s/xmippCore/lib"%XMIPP_BUNDLE,"%s/xmipp/lib"%XMIPP_BUNDLE])
-
+       incs=[env['JNI_CPPPATH'], "%s/xmippCore" % XMIPP_BUNDLE, "%s/xmipp/libraries" % XMIPP_BUNDLE],
+       libs=['pthread', 'XmippCore', 'Xmipp'],
+       libpath=["%s/xmippCore/lib" % XMIPP_BUNDLE, "%s/xmipp/lib" % XMIPP_BUNDLE])
 
 #  ***********************************************************************
 #  *                      Java Libraries                                 *
@@ -104,18 +100,18 @@ dpath = lambda path: Dir('%s' % path).abspath
 epath = lambda path: Entry('%s' % path).abspath
 
 javaEnumDict = {
-    'ImageWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE), 'WRITE_'],
-    'CastWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE), 'CW_'],
-    'MDLabel': [fpath('%s/xmippCore/core/metadata_label.h'%XMIPP_BUNDLE), ['MDL_', 'RLN_', 'BSOFT']],
-    'XmippError': [fpath('%s/xmippCore/core/xmipp_error.h'%XMIPP_BUNDLE), 'ERR_']}
+    'ImageWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h' % XMIPP_BUNDLE), 'WRITE_'],
+    'CastWriteMode': [fpath('%s/xmippCore/core/xmipp_image_base.h' % XMIPP_BUNDLE), 'CW_'],
+    'MDLabel': [fpath('%s/xmippCore/core/metadata_label.h' % XMIPP_BUNDLE), ['MDL_', 'RLN_', 'BSOFT']],
+    'XmippError': [fpath('%s/xmippCore/core/xmipp_error.h' % XMIPP_BUNDLE), 'ERR_']}
 
 
 def WriteJavaEnum(class_name, header_file, pattern, log):
     java_file = fpath('java/src/xmipp/jni/%s.java' % class_name)
     env.Depends(java_file, header_file)
     fOut = open(java_file, 'w+')
-    counter = 0;
-    if isinstance(pattern, basestring):
+    counter = 0
+    if isinstance(pattern, str):
         patternList = [pattern]
     elif isinstance(pattern, list):
         patternList = pattern
@@ -128,7 +124,7 @@ public class %s {
 """ % class_name)
 
     for line in open(header_file):
-        l = line.strip();
+        l = line.strip()
         for p in patternList:
             if not l.startswith(p):
                 continue
@@ -138,9 +134,9 @@ public class %s {
                 comment = ''
             if l.startswith(last_label_pattern):
                 l = l.replace(last_label_pattern, last_label_pattern + " = " + str(counter) + ";")
-            if (l.find("=") == -1):
+            if l.find("=") == -1:
                 l = l.replace(",", " = %d;" % counter)
-                counter = counter + 1;
+                counter = counter + 1
             else:
                 l = l.replace(",", ";")
 
@@ -155,7 +151,7 @@ public class %s {
 
 def ExtractEnumFromHeader(env, target, source):
     log = open(str(target[0]), 'w+')
-    for (class_name, list) in javaEnumDict.iteritems():
+    for (class_name, list) in javaEnumDict.items():
         WriteJavaEnum(class_name, list[0], list[1], log)
 
     log.close()
@@ -167,7 +163,7 @@ env['JAVA_BUILDPATH'] = 'java/build'
 env['JAVA_LIBPATH'] = 'java/lib'
 env['JAVA_SOURCEPATH'] = 'java/src'
 env['ENV']['LANG'] = 'en_GB.UTF-8'
-env['JARFLAGS'] = '-Mcf'    # Default "cf". "M" = Do not add a manifest file.
+env['JARFLAGS'] = '-Mcf'  # Default "cf". "M" = Do not add a manifest file.
 # Set -g debug options if debugging
 if debug:
     env['JAVAC'] = 'javac -g'  # TODO: check how to add -g without changing JAVAC
@@ -176,13 +172,13 @@ javaBuild = Execute(Mkdir(epath('java/build')))
 
 # Update enums in java files from C++ headers. If they don't exist, generate them.
 log = open(fpath('java/build/javaLog'), 'w+')
-for class_name, class_list in javaEnumDict.iteritems():
+for class_name, class_list in javaEnumDict.items():
     WriteJavaEnum(class_name, class_list[0], class_list[1], log)
 
 javaExtractCommand = env.Command(
     epath('bindings/java/src/xmipp/jni/enums.changelog'),
-    [fpath('%s/xmippCore/core/xmipp_image_base.h'%XMIPP_BUNDLE),
-     fpath('%s/xmippCore/core/metadata_label.h'%XMIPP_BUNDLE)],
+    [fpath('%s/xmippCore/core/xmipp_image_base.h' % XMIPP_BUNDLE),
+     fpath('%s/xmippCore/core/metadata_label.h' % XMIPP_BUNDLE)],
     ExtractEnumFromHeader)
 
 javaEnums = env.Alias('javaEnums', javaExtractCommand)
@@ -190,7 +186,7 @@ javaEnums = env.Alias('javaEnums', javaExtractCommand)
 imagejUntar = env.Untar(
     fpath('external/imagej/ij.jar'), fpath('external/imagej.tgz'),
     cdir=dpath('external'))
-#env.Depends(imagejUntar, javaEnums)
+# env.Depends(imagejUntar, javaEnums)
 
 ijLink = env.SymLink(fpath('java/lib/ij.jar'), imagejUntar[0].abspath)
 env.Depends(ijLink, imagejUntar)
@@ -216,11 +212,11 @@ xmippTest = env.AddJavaLibrary(
     'XmippTest', 'xmipp/test',
     deps=[xmippViewer])
 
-
 # FIXME: the environment used for the rest of SCons is imposible to
 # use to compile java code. Why?
 # In the meanwhile we'll use an alternative environment.
 env2 = Environment(ENV=os.environ)
+env2['JAVAC'] = os.environ['JAVAC']
 env2.AppendUnique(JAVACLASSPATH='"%s/*"' % dpath('java/lib'))
 javaExtraFileTypes = env2.Java(epath('java/build/HandleExtraFileTypes.class'),
                                fpath('java/src/HandleExtraFileTypes.java'))
@@ -233,7 +229,7 @@ env2.Default(javaExtraFileTypes)
 fileTypesInstallation = env.Install(
     dpath('external/imagej/plugins/Input-Output/'),
     epath('java/build/HandleExtraFileTypes.class/HandleExtraFileTypes.class'))
-#env.Depends(fileTypesInstallation, pluginLink)
+# env.Depends(fileTypesInstallation, pluginLink)
 env.Default(fileTypesInstallation)
 
 # Java tests
@@ -276,6 +272,5 @@ addBatch('showj', 'showj/batch_showj.py')
 
 XmippAlias = env.Alias('xmipp', ['xmipp-libs',
                                  'xmipp-java'])
-
 
 Return('XmippAlias')

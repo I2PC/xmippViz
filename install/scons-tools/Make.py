@@ -13,18 +13,19 @@
 #    MakeTargets -- String of space-seperated targets to pass to make
 #                   Default: ""
 
+import sys
 import os
 import subprocess
 
-from SCons.Script import Exit, GetOption
+from SCons.Script import GetOption
 
 
 def parms(target, source, env):
     """Assemble various Make parameters."""
 
     if 'MakePath' not in env:
-        print "Make builder requires MakePath variable"
-        Exit(1)
+        print("Make builder requires MakePath variable")
+        sys.exit(1)
 
     make_path = env.subst(str(env['MakePath']))
 
@@ -61,7 +62,7 @@ def parms(target, source, env):
 
     out = env.get('MakeStdOut')
 
-    return (make_path, make_env, make_targets, make_cmd, make_jobs, make_opts, out)
+    return make_path, make_env, make_targets, make_cmd, make_jobs, make_opts, out
 
 
 def message(target, source, env):
@@ -87,15 +88,15 @@ def message(target, source, env):
                            target=target, source=source, raw=1) + " > %s " % out
 
     msg = 'cd ' + make_path + ' &&'
-    if make_env != None:
-        for k, v in make_env.iteritems():
+    if make_env is not None:
+        for k, v in make_env.items():
             msg += ' ' + k + '=' + v
     msg += ' ' + make_cmd
     if make_jobs > 1:
         msg += ' -j %d' % make_jobs
-    if make_opts != None:
+    if make_opts is not None:
         msg += ' ' + ' '.join(make_opts)
-    if make_targets != None:
+    if make_targets is not None:
         msg += ' ' + make_targets
     return msg
 
@@ -113,9 +114,9 @@ def builder(target, source, env):
 
     # Make sure there's a directory to run make in
     if len(make_path) == 0:
-        print 'No path specified'
+        print('No path specified')
     if not os.path.exists(make_path):
-        print 'Path %s not found' % make_path
+        print('Path %s not found' % make_path)
 
     # Build up the command and its arguments in a list
     fullcmd = [ make_cmd ]
@@ -150,6 +151,6 @@ def generate(env, **kwargs):
 
 
 def exists(env):
-    if env.WhereIs(env.subst('$MAKE')) != None:
+    if env.WhereIs(env.subst('$MAKE')) is not None:
         return True
     return False

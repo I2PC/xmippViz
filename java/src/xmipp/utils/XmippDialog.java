@@ -32,12 +32,9 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * This class serve as a simple JDialog extension. The Ok and Cancel buttons are
@@ -49,6 +46,7 @@ public class XmippDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	protected Window parent;
 	protected boolean result;
+	protected JPanel panel;
 	protected JButton btnCancel;
 	protected JButton btnOk;
 	protected String btnOkText = "Ok";
@@ -77,11 +75,12 @@ public class XmippDialog extends JDialog implements ActionListener {
 	protected void initComponents() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		Container content = getContentPane();
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		createContent(panel);
 		content.add(panel, BorderLayout.CENTER);
 		createButtons();
 		content.add(panelBtn, BorderLayout.PAGE_END);
+
 		pack();
 		if (parent != null)
 			XmippWindowUtil.centerWindows(this, parent);
@@ -89,18 +88,39 @@ public class XmippDialog extends JDialog implements ActionListener {
 			XmippWindowUtil.centerWindows(this);
 	}
 
+	protected void registerHotKeys(final JButton btn, int keyStroke){
+		// Associate the escape with cancel
+		KeyStroke stroke = KeyStroke.getKeyStroke(keyStroke, 0);
+
+		panel.registerKeyboardAction(
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						btn.doClick();
+					}
+				}, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+	}
+
 	protected JButton addButton(String text) {
+		return addButton(text, 0);
+	}
+	protected JButton addButton(String text, int keyStroke) {
 		JButton btn = XmippWindowUtil.getTextButton(text, this);
 		panelBtn.add(btn);
+
+		if (keyStroke != 0){
+			registerHotKeys(btn, keyStroke);
+		}
 		return btn;
 	}
 
 	protected void createButtons() {
 		// Create panel for Ok and Cancel buttons
 		panelBtn = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-		btnOk = addButton(btnOkText);
+		btnOk = addButton(btnOkText, KeyEvent.VK_ENTER);
 		if (btnCancelDisplay)
-			btnCancel = addButton(btnCancelText);
+			btnCancel = addButton(btnCancelText, KeyEvent.VK_ESCAPE);
 	}
 
 	/** Function to display the Dialog and return the result state */
