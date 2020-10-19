@@ -10,6 +10,7 @@
 #include <data/transform_downsample.h>
 #include <data/filters.h>
 #include <core/geometry.h>
+#include "core/transformations.h"
 
 JNIEXPORT void JNICALL
 Java_xmipp_jni_ImageGeneric_create(JNIEnv *env, jobject jobj)
