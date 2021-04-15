@@ -22,7 +22,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_storeIds
 JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_create
 (JNIEnv *env, jobject jobj)
 {
-    MetaData * md = new MetaData();
+    MetaData * md = new MetaDataDb();
     //env->SetLongField(jobj, MetaData_peerId, (long)md);
     STORE_PEER_ID(jobj, md);
 }
@@ -80,7 +80,7 @@ JNIEXPORT jboolean JNICALL Java_xmipp_jni_deactivateThreadMuting(JNIEnv *env, jo
     bool error=false;
     XMIPP_JAVA_TRY
     {
-    	MetaData * md = GET_INTERNAL_METADATA(jobj);
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
         error=md->getDatabase()->deactivateThreadMuting();
     }
     XMIPP_JAVA_CATCH;
@@ -422,9 +422,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_makeAbsPath
 {
     XMIPP_JAVA_TRY
     {
-        MetaData * md = GET_INTERNAL_METADATA(jobj);
-
-
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
         md->makeAbsPath((MDLabel) label);
     }
     XMIPP_JAVA_CATCH;
@@ -603,7 +601,7 @@ JNIEXPORT jboolean JNICALL Java_xmipp_jni_MetaData_setValueBoolean(JNIEnv *env,
 JNIEXPORT jdoubleArray JNICALL Java_xmipp_jni_MetaData_getStatistics(JNIEnv *env,
         jobject jobj, jboolean applyGeo, jint label)
 {
-    MetaData *md = GET_INTERNAL_METADATA(jobj);
+    MetaDataDb *md = GET_INTERNAL_METADATADB(jobj);
 
     XMIPP_JAVA_TRY
     {
@@ -697,10 +695,8 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_sort
 
     XMIPP_JAVA_TRY
     {
-        MetaData * md = GET_INTERNAL_METADATA(jobj);
-
-
-        MetaData mdSorted;
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
+        MetaDataDb mdSorted;
         mdSorted.sort(*md, (MDLabel)label, ascending);
         *md = mdSorted;
     }
@@ -815,7 +811,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_getStatsImages
 {
     XMIPP_JAVA_TRY
     {
-        MetaData * md = GET_INTERNAL_METADATA(jmetadata);
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jmetadata);
         ImageGeneric *avg = GET_INTERNAL_IMAGE_GENERIC(jimageAvg);
         ImageGeneric *std = GET_INTERNAL_IMAGE_GENERIC(jimageStd);
         avg->setDatatype(DT_Double);
@@ -878,7 +874,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_computeFourierStatistics
 
     XMIPP_JAVA_TRY
     {
-        MetaData * mdIn = GET_INTERNAL_METADATA(jmetadata);
+        MetaDataDb * mdIn = GET_INTERNAL_METADATADB(jmetadata);
         getFourierStatistics(*mdIn, 1, *mdOut, true, 2, (MDLabel)label);
     }
     XMIPP_JAVA_CATCH;
@@ -894,10 +890,8 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_unionAll
 {
     XMIPP_JAVA_TRY
     {
-        MetaData * md = GET_INTERNAL_METADATA(jobj);
-
-
-        MetaData * mdIn = GET_INTERNAL_METADATA(jmdIn);
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
+        MetaDataDb * mdIn = GET_INTERNAL_METADATADB(jmdIn);
         md->unionAll(*mdIn);
     }
     XMIPP_JAVA_CATCH;
@@ -961,7 +955,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_readPlain
         const char * nfile = env->GetStringUTFChars(jfile, &aux);
         aux=false;
         const char * ncolumns = env->GetStringUTFChars(jcolumns, &aux);
-        MetaData * metadata = GET_INTERNAL_METADATA(jobj);
+        MetaDataDb * metadata = GET_INTERNAL_METADATADB(jobj);
         metadata->readPlain(nfile, ncolumns);
         env->ReleaseStringUTFChars(jfile, nfile);
         env->ReleaseStringUTFChars(jcolumns, ncolumns);
@@ -978,7 +972,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_operate
     {
         jboolean aux=false;
         const char * opStr = env->GetStringUTFChars(operateString, &aux);
-        MetaData * md = GET_INTERNAL_METADATA(jobj);
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
         md->operate(opStr);
     }
     XMIPP_JAVA_CATCH;
@@ -989,7 +983,7 @@ JNIEXPORT jdouble JNICALL Java_xmipp_jni_MetaData_getColumnMax
 {
     XMIPP_JAVA_TRY
     {
-        MetaData * md = GET_INTERNAL_METADATA(jobj);
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
         return md->getColumnMax((MDLabel)column);
     }
     XMIPP_JAVA_CATCH;
@@ -1001,7 +995,7 @@ JNIEXPORT jdouble JNICALL Java_xmipp_jni_MetaData_getColumnMin
 {
     XMIPP_JAVA_TRY
     {
-        MetaData * md = GET_INTERNAL_METADATA(jobj);
+        MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
         return md->getColumnMin((MDLabel)column);
     }
     XMIPP_JAVA_CATCH;
@@ -1026,8 +1020,8 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_setRow
 {
   XMIPP_JAVA_TRY
   {
-      MetaData * md = GET_INTERNAL_METADATA(jobj);
-      MDRow * mdRow = GET_INTERNAL_MDROW(jobjRow);
+      MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
+      MDRowSql * mdRow = GET_INTERNAL_MDROWSQL(jobjRow);
       md->setRow(*mdRow, (size_t)objId);
   }
   XMIPP_JAVA_CATCH;
