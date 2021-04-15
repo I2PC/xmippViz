@@ -14,7 +14,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MDRow_storeIds
 JNIEXPORT void JNICALL Java_xmipp_jni_MDRow_create
 (JNIEnv *env, jobject jobj)
 {
-    MDRow * mdRow = new MDRow();
+    MDRow * mdRow = new MDRowSql();
     STORE_PEER_ID(jobj, mdRow);
 }
 
