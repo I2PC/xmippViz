@@ -1007,9 +1007,9 @@ JNIEXPORT void JNICALL Java_xmipp_jni_MetaData_getRow
 {
   XMIPP_JAVA_TRY
   {
-      MetaData * md = GET_INTERNAL_METADATA(jobj);
-      MDRow * mdRow = GET_INTERNAL_MDROW(jobjRow);
-      md->getRow(*mdRow, (size_t)objId);
+      MetaDataDb * md = GET_INTERNAL_METADATADB(jobj);
+      MDRowSql * mdRow = GET_INTERNAL_MDROWSQL(jobjRow);
+      *mdRow = md->getRowSql((size_t)objId);
   }
   XMIPP_JAVA_CATCH;
 }
