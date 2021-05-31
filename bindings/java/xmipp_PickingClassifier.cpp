@@ -15,12 +15,11 @@ Java_xmipp_jni_PickingClassifier_create(JNIEnv *env, jobject jobj, jint particle
         jboolean aux=false;
         const FileName &model_name = env->GetStringUTFChars(output, &aux);
         int length = env->GetArrayLength(jmics);
-	    MDRowVec row;
-	    std::vector<MDRowVec> mics;
+	    std::vector<MDRowSql> mics;
 	    for(int i = 0; i < length; i++)
 	    {
-			 row = *GET_INTERNAL_MDROWVEC(env->GetObjectArrayElement(jmics, i));
-			 mics.push_back(row);
+			MDRowSql row = *GET_INTERNAL_MDROWSQL(env->GetObjectArrayElement(jmics, i));
+			mics.push_back(row);
 	    }
         AutoParticlePicking2 *picker = new AutoParticlePicking2(size, filter_num, corr_num, NPCA, model_name, mics);
 
@@ -50,16 +49,16 @@ JNIEXPORT void JNICALL Java_xmipp_jni_PickingClassifier_train
     XMIPP_JAVA_TRY
     {
     	   AutoParticlePicking2 *picker = GET_INTERNAL_AUTOPARTICLEPICKING2(jobj);
-    	   MetaDataVec md;
+    	   MetaDataDb md;
     	   FileName micFile, posFile;
-    	   std::vector<MDRowVec> vd;
-    	   MDRowVec row;
-    	   MDRowVec* trainRow;
+    	   std::vector<MDRowSql> vd;
+    	   MDRowSql row;
+    	   MDRowSql* trainRow;
     	   int size = env->GetArrayLength(jtrainList);
     	   int xcoor, ycoor;
     	   for(int i = 0; i < size; i++)
     	   {
-				trainRow = GET_INTERNAL_MDROWVEC(env->GetObjectArrayElement(jtrainList, i));
+				trainRow = GET_INTERNAL_MDROWSQL(env->GetObjectArrayElement(jtrainList, i));
 				trainRow->getValue(MDL_MICROGRAPH, micFile);
 				trainRow->getValue(MDL_MICROGRAPH_PARTICLES, posFile);
 				md.read("particles@" + posFile);
@@ -87,7 +86,7 @@ JNIEXPORT jobjectArray JNICALL Java_xmipp_jni_PickingClassifier_autopick
     XMIPP_JAVA_TRY
     {
         AutoParticlePicking2 *picker = GET_INTERNAL_AUTOPARTICLEPICKING2(jobj);
-        std::vector<MDRowVec> vd;
+        std::vector<MDRowSql> vd;
         jboolean aux=false;
         const FileName micrograph = env->GetStringUTFChars(filename, &aux);
         picker->automaticallySelectParticles(micrograph, percent, vd);
@@ -121,19 +120,19 @@ JNIEXPORT void JNICALL Java_xmipp_jni_PickingClassifier_correct
     XMIPP_JAVA_TRY
     {
     	  int size = env->GetArrayLength(jmanualRows);
-    	  MDRowVec row;
-    	  std::vector<MDRowVec> manualRows;
+    	  MDRowSql row;
+    	  std::vector<MDRowSql> manualRows;
     	  for(int i = 0; i < size; i++)
     	  {
-    		  	 row = *GET_INTERNAL_MDROWVEC(env->GetObjectArrayElement(jmanualRows, i));
+    		  	 row = *GET_INTERNAL_MDROWSQL(env->GetObjectArrayElement(jmanualRows, i));
     	         manualRows.push_back(row);
     	  }
 
     	  size = env->GetArrayLength(jautoRows);
-		  std::vector<MDRowVec> autoRows;
+		  std::vector<MDRowSql> autoRows;
 		  for(int i = 0; i < size; i++)
 		  {
-				 row = *GET_INTERNAL_MDROWVEC(env->GetObjectArrayElement(jautoRows, i));
+				 row = *GET_INTERNAL_MDROWSQL(env->GetObjectArrayElement(jautoRows, i));
 				 autoRows.push_back(row);
 		  }
 
