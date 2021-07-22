@@ -15,6 +15,9 @@ public class Filename {
 	public final static String EXT_MRC2 = ".map";
 	public final static String EXT_MRCS = ".mrcs";
 	public final static String EXT_MRCS2 = ".st";
+    public final static String EXT_MRCREC = ".rec";
+    public final static String EXT_MRCSALI = ".ali";
+    public final static String EXT_MRCSPREALI = ".preali";
 	public final static String EXT_IMG = ".img";
 	public final static String EXT_HED = ".hed";
 	public final static String EXT_SER = ".ser";
@@ -58,10 +61,10 @@ public class Filename {
 			EXT_IMG, EXT_HED, EXT_PSD, EXT_SER, EXT_DM3, EXT_EM, EXT_PIF,
 			EXT_RAW, EXT_INF, EXT_SPE, EXT_SPI, EXT_TIF, EXT_MRC, EXT_MRC2, EXT_PNG, EXT_JPG };
         
-	public final static String[] VOLUMES = new String[] { EXT_MRC, EXT_MRC2,
+	public final static String[] VOLUMES = new String[] { EXT_MRC, EXT_MRC2, EXT_MRCREC,
 			EXT_VOL, EXT_EM, EXT_PIF };
         
-	public final static String[] STACKS = new String[] { EXT_MRCS, EXT_MRCS2,
+	public final static String[] STACKS = new String[] { EXT_MRCS, EXT_MRCS2, EXT_MRCSALI, EXT_MRCSPREALI,
 			EXT_STK, EXT_PIF, EXT_EMS, EXT_DM4};
 
 	public final static String[] METADATAS = new String[] { EXT_XMD, EXT_SEL,
