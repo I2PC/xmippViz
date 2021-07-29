@@ -111,6 +111,7 @@ JNIEXPORT jobjectArray JNICALL Java_xmipp_jni_PickingClassifier_autopick
 		return rows;
     }
     XMIPP_JAVA_CATCH;
+	return nullptr;
 }
 
 
