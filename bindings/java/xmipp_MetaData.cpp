@@ -736,7 +736,7 @@ JNIEXPORT jlong JNICALL Java_xmipp_jni_MetaData_firstObject(JNIEnv *env,
 
     XMIPP_JAVA_TRY
     {
-        id = md->firstObject();
+        id = md->firstRowId();
     }
     XMIPP_JAVA_CATCH;
 
