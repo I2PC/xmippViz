@@ -5,7 +5,7 @@
 #include "xmipp_InternalData.h"
 #include "xmipp_ExceptionsHandler.h"
 
-#include <core/metadata.h>
+#include <core/metadata_db.h>
 #include <core/metadata_label.h>
 #include <core/metadata_sql.h>
 #include <core/metadata_extension.h>
