@@ -46,9 +46,9 @@ CYGWIN = env['PLATFORM'] == 'cygwin'
 MACOSX = env['PLATFORM'] == 'darwin'
 MINGW = env['PLATFORM'] == 'win32'
 
-XMIPP_PATH = Dir('.').abspath
 XMIPP_BUNDLE = Dir('..').abspath
-
+XMIPPVIZ_PATH = Dir('.').abspath
+XMIPP_PATH = join(XMIPP_BUNDLE,'xmipp')
 
 #  ***********************************************************************
 #  *                      Xmipp C++ Libraries                            *
@@ -60,6 +60,7 @@ def addLib(name, **kwargs):
     # Install all libraries in scipion/software/lib
     # COSS kwargs['installDir'] = '#software/lib'
     # Add always the xmipp path as -I for include and also xmipp/libraries
+    print(XMIPP_PATH)
     incs = kwargs.get('incs', []) + [join(XMIPP_PATH, 'external'),
                                      join(XMIPP_PATH, 'libraries')]
     kwargs['incs'] = incs
@@ -258,8 +259,8 @@ def addBatch(batchName, script, scriptFolder='applications/scripts'):
     by default in 'applications/scripts/'
     """
     xmippBatchName = 'xmipp_%s' % batchName
-    batchLink = env.SymLink(join(XMIPP_PATH, 'bin', xmippBatchName),
-                            join(XMIPP_PATH, scriptFolder, script))
+    batchLink = env.SymLink(join(XMIPPVIZ_PATH, 'bin', xmippBatchName),
+                            join(XMIPPVIZ_PATH, scriptFolder, script))
     env.Alias('xmipp-batchs', batchLink)
 
     return batchLink
