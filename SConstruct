@@ -29,6 +29,7 @@
 
 # Builders and pseudobuilders used be SConscript to install things.
 
+EnsurePythonVersion(3, 3)
 
 import os
 import sys
@@ -44,10 +45,7 @@ import fnmatch
 import platform
 from SCons import SConf, Node, Script
 
-try:
-    from ConfigParser import ConfigParser, ParsingError
-except ImportError:
-    from configparser import ConfigParser, ParsingError  # Python 3
+from configparser import ConfigParser, ParsingError
 
 MACOSX = (platform.system() == 'Darwin')
 WINDOWS = (platform.system() == 'Windows')
