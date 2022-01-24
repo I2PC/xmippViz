@@ -164,7 +164,7 @@ Java_xmipp_jni_ImageGeneric_readApplyGeo_1(JNIEnv *env, jobject jimage,
 
 #define SELF_SCALE_TO_SIZE(type) MultidimArray<type> *mdaFloat; \
  MULTIDIM_ARRAY_GENERIC(*image).getMultidimArrayPointer(mdaFloat); \
- selfScaleToSize(LINEAR, *mdaFloat, (int)w, (int)h);
+ selfScaleToSize(xmipp_transformation::LINEAR, *mdaFloat, (int)w, (int)h);
 
         SWITCHDATATYPE(image->getDatatype(), SELF_SCALE_TO_SIZE);
     }
@@ -847,7 +847,7 @@ JNIEXPORT jobject JNICALL Java_xmipp_jni_ImageGeneric_bestShift
             tmpI.setXmippOrigin();
             tmpI2.setXmippOrigin();
             bestNonwrappingShift(T, tmpI, MAT_ELEM(alignmentM, 0, 2), MAT_ELEM(alignmentM, 1, 2), aux2);
-            applyGeometry(LINEAR, tmpI, tmpI2, alignmentM, IS_NOT_INV, true);
+            applyGeometry(xmipp_transformation::LINEAR, tmpI, tmpI2, alignmentM, xmipp_transformation::IS_NOT_INV, true);
             corr = correlationIndex(T, tmpI2);
             if (corr > max)
             {
@@ -1055,7 +1055,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_ImageGeneric_applyGeo
 
 		   }
 	       transformM *= scaleFactor;
-		   applyGeometry(LINEAR, Iaux, *I, transformM, IS_NOT_INV, wrap);
+		   applyGeometry(xmipp_transformation::LINEAR, Iaux, *I, transformM, xmipp_transformation::IS_NOT_INV, wrap);
            *I=Iaux;
 	   }
 	   XMIPP_JAVA_CATCH;
@@ -1083,7 +1083,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_ImageGeneric_applyGeoMatrix
          MultidimArray<double> *I, Iaux;
          MULTIDIM_ARRAY_GENERIC(*img).getMultidimArrayPointer(I);
 
-         applyGeometry(LINEAR, Iaux, *I, transformM, IS_NOT_INV, wrap);
+         applyGeometry(xmipp_transformation::LINEAR, Iaux, *I, transformM, xmipp_transformation::IS_NOT_INV, wrap);
          *I=Iaux;
 
      }

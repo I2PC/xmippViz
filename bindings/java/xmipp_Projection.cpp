@@ -105,7 +105,7 @@ JNIEXPORT void JNICALL Java_xmipp_jni_Projection_projectVolume
 
                 // Transforms...
                 mdVolume->setXmippOrigin();
-                applyGeometry(LINEAR, volumeRot, *mdVolume, m, false, false);
+                applyGeometry(xmipp_transformation::LINEAR, volumeRot, *mdVolume, m, false, false);
 
                 // Projects...
                 projectVolume(volumeRot, auxProjection, h, w, 0, 0, 0);
