@@ -115,9 +115,9 @@ JNIEXPORT void JNICALL Java_xmipp_jni_Projection_projectVolume
                 imageAux.write("/home/jvega/volume_tmp.vol");
                 //projectVolume(*mdVolume, auxProjection, h, w, (double) rot, (double) tilt, (double) psi);
             }
-            catch (XmippError xe)
+            catch (XmippError &xe)
             {
-                msg = xe.getDefaultMessage();
+                msg = xe.what();
             }
             catch (std::exception& e)
             {
@@ -160,9 +160,9 @@ JNIEXPORT jdouble JNICALL Java_xmipp_jni_Projection_entropyOtsuSegmentation
 
         return EntropyOtsuSegmentation(*mdarray, percentile, binarize);
     }
-    catch (XmippError xe)
+    catch (XmippError &xe)
     {
-        msg = xe.getDefaultMessage();
+        msg = xe.what();
     }
     catch (std::exception& e)
     {
@@ -263,9 +263,9 @@ JNIEXPORT jdoubleArray JNICALL Java_xmipp_jni_Projection_eulerMatrix2Angles
 
         return array;
     }
-    catch (XmippError xe)
+    catch (XmippError &xe)
     {
-        msg = xe.getDefaultMessage();
+        msg = xe.what();
     }
     catch (std::exception& e)
     {

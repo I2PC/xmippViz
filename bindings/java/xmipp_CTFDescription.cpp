@@ -45,9 +45,9 @@ JNIEXPORT void JNICALL Java_xmipp_jni_CTFDescription_read_1
             ctfDescription->read(fnStr);
             ctfDescription->produceSideInfo();
         }
-        catch (XmippError xe)
+        catch (XmippError &xe)
         {
-            msg = xe.getDefaultMessage();
+            msg = xe.what();
         }
         catch (std::exception& e)
         {
@@ -84,9 +84,9 @@ JNIEXPORT jdouble JNICALL Java_xmipp_jni_CTFDescription_getFMAX(JNIEnv *env,
         {
             FMAX = 1 / (2 * ctfDescription->Tm);
         }
-        catch (XmippError xe)
+        catch (XmippError &xe)
         {
-            msg = xe.getDefaultMessage();
+            msg = xe.what();
         }
         catch (std::exception& e)
         {
@@ -153,9 +153,9 @@ JNIEXPORT jobjectArray JNICALL Java_xmipp_jni_CTFDescription_CTFProfile(
             return profilesArray;
 
         }
-        catch (XmippError xe)
+        catch (XmippError &xe)
         {
-            msg = xe.getDefaultMessage();
+            msg = xe.what();
         }
         catch (std::exception& e)
         {
@@ -220,9 +220,9 @@ JNIEXPORT jobjectArray JNICALL Java_xmipp_jni_CTFDescription_CTFAverageProfile(
 
             return profilesArray;
         }
-        catch (XmippError xe)
+        catch (XmippError &xe)
         {
-            msg = xe.getDefaultMessage();
+            msg = xe.what();
         }
         catch (std::exception& e)
         {
