@@ -9,7 +9,7 @@ void handleXmippException(JNIEnv *env, std::string message);
 //This is a macro for common error handling inside JNI implementations
 #define XMIPP_JAVA_TRY String __msg(""); try
 #define XMIPP_JAVA_CATCH catch (XmippError &xe){\
-    __msg = xe.getMessage();}\
+    __msg = xe.what();}\
 catch (std::exception& e){\
   __msg = e.what();}\
 catch (...){\
