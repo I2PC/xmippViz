@@ -133,9 +133,12 @@ except OSError:
     sys.exit("Config file not found.")
 except ParsingError:
     sys.exit("%s\nError while parsing the config file." % sys.exc_info()[1])
-if not 'BUILD' in cf.sections():
-    print("Cannot find section BUILD in the config file.")
-os.environ.update(dict(cf.items('BUILD')))
+if not 'USER FLAGS' in cf.sections():
+		print("Cannot find section USER FLAGS in the config file.")
+if not 'INTERNAL FLAGS' in cf.sections():
+		print("Cannot find section INTERNAL FLAGS in the config file.")
+os.environ.update(dict(cf.items('USER FLAGS')))
+os.environ.update(dict(cf.items('INTERNAL FLAGS')))
 
 env['CPPPATH'] = os.environ.get('CPPPATH', [])
 env['CC'] = os.environ.get('CC')
