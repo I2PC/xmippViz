@@ -40,24 +40,30 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 	if ("${HEADER_CONTENT}" MATCHES ${ENUM_REGEX})
 		set(ENUM_BODY ${CMAKE_MATCH_1})
 		string(REGEX MATCHALL "[^\n\r]+" ENUM_BODY ${ENUM_BODY})
-
 		
 		foreach(ENUM_ITEM ${ENUM_BODY})
 			if("${ENUM_ITEM}" MATCHES "([a-zA-Z0-9_]+)")
 				set(ENUM_ITEM_NAME ${CMAKE_MATCH_1})
 
+				# Write the item prefix
 				string(APPEND ENUM_VALUES "\tpublic static final int ")
+
 				if("${ENUM_ITEM}" MATCHES "^[ \t\n]*([a-zA-Z0-9_]+[ \t\n]*=[ \t\n]*[a-zA-Z0-9_-]+)")
+					# Assignment item. Use it as-is
 					string(APPEND ENUM_VALUES "${CMAKE_MATCH_1}")
 				else()
+					# "Normal" item. Increment previous value (or start from zero)
 					if(ENUM_LAST_ITEM_NAME)
 						string(APPEND ENUM_VALUES "${ENUM_ITEM_NAME} = ${ENUM_LAST_ITEM_NAME}+1")
 					else()
 						string(APPEND ENUM_VALUES "${ENUM_ITEM_NAME} = 0")
 					endif()
 				endif()
+
+				# Write the item suffix
 				string(APPEND ENUM_VALUES ";\n")
 
+				# Update the last item name
 				set(ENUM_LAST_ITEM_NAME ${ENUM_ITEM_NAME})
 			else()
 				message(WARNING "Unable to parse enum line")
