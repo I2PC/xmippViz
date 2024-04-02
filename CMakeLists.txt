@@ -29,14 +29,13 @@ find_package(Java REQUIRED)
 find_package(JNI REQUIRED)
 include(UseJava)
 
-function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_PATTERN)
+function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 	get_filename_component(CLASS_NAME ${OUTPUT_FILE} NAME_WE)
 
 	# Read header file
 	file(READ "${HEADER_FILE}" HEADER_CONTENT)
 
-	set(ENUM_REGEX "enum\\s+${ENUM_NAME}")
-	if ("${HEADER_CONTENT}" MATCHES "enum\\s+${ENUM_NAME}")
+	if ("${HEADER_CONTENT}" MATCHES "enum\\s+${ENUM_NAME}\\s*{\\s*([^{}]+)\\s*}")
 		set(ENUM_VALUES ${CMAKE_MATCH_1})
 		configure_file(
 			${CMAKE_CURRENT_SOURCE_DIR}/cmake/enum.java.in

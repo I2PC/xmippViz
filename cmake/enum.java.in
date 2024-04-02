@@ -1,0 +1,5 @@
+package xmipp.jni;
+
+public enum @CLASS_NAME@ {
+	@ENUM_VALUES@
+}
