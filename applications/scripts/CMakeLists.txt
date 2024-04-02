@@ -20,37 +20,29 @@
 #  e-mail address 'xmipp@cnb.csic.es'
 # ***************************************************************************
 
-cmake_minimum_required(VERSION 3.16)
-
-include(GNUInstallDirs)
-
-# Find dependencies
-find_package(Java COMPONENTS Runtime Development REQUIRED)
-find_package(JNI REQUIRED)
-
-# Find source files
 file(
-	GLOB_RECURSE 
-	JNI_SOURCES 
-		${CMAKE_CURRENT_SOURCE_DIR}/bindings/java/*.cpp 
+	GLOB 
+	SCRIPT_DIRECTORIES
+	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*
 )
 
-# Create the shared library
-add_library(XmippJNI SHARED ${JNI_SOURCES})
-#target_precompile_headers(
-#	xmippLib
-#	PRIVATE
-#		${HEADERS}
-#)
-target_link_libraries(
-	XmippJNI
-	PUBLIC
-		Xmipp
-		JNI::JNI
-)
-install(
-	TARGETS XmippJNI
- 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
+foreach(SCRIPT_DIRECTORY ${SCRIPT_DIRECTORIES})
+	if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${SCRIPT_DIRECTORY})
+		set(PROGRAM_NAME xmipp_${SCRIPT_DIRECTORY})
 
-add_subdirectory(applications)
+		file(
+			GLOB 
+			SCRIPT_PATH
+				${CMAKE_CURRENT_SOURCE_DIR}/${SCRIPT_DIRECTORY}/*.py
+				${CMAKE_CURRENT_SOURCE_DIR}/${SCRIPT_DIRECTORY}/*.sh
+		)	
+		
+		message(${SCRIPT_PATH})
+		install(
+			PROGRAMS ${SCRIPT_PATH}
+			DESTINATION ${CMAKE_INSTALL_BINDIR}
+			RENAME ${PROGRAM_NAME}.py
+		)
+
+	endif()
+endforeach()

@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-include(UseJava)
+add_subdirectory(scripts)
