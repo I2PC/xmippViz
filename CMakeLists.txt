@@ -35,7 +35,8 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 	# Read header file
 	file(READ "${HEADER_FILE}" HEADER_CONTENT)
 
-	if ("${HEADER_CONTENT}" MATCHES "enum\\s+${ENUM_NAME}\\s*{\\s*([^{}]+)\\s*}")
+	set(ENUM_REGEX "enum[ \t\n]+${ENUM_NAME}[ \t\n]*{[ \t\n]*([^{}]+)[ \t\n]*}")
+	if ("${HEADER_CONTENT}" MATCHES ${ENUM_REGEX})
 		set(ENUM_VALUES ${CMAKE_MATCH_1})
 		configure_file(
 			${CMAKE_CURRENT_SOURCE_DIR}/cmake/enum.java.in

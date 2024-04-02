@@ -1,5 +1,7 @@
 package xmipp.jni;
 
-public enum @CLASS_NAME@ {
+public class @CLASS_NAME@ {
+	public static final int 
 	@ENUM_VALUES@
+	;
 }
