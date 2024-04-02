@@ -1,7 +1,5 @@
 package xmipp.jni;
 
 public class @CLASS_NAME@ {
-	public static final int 
-	@ENUM_VALUES@
-	;
+@ENUM_VALUES@
 }

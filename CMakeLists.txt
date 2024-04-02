@@ -35,9 +35,36 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 	# Read header file
 	file(READ "${HEADER_FILE}" HEADER_CONTENT)
 
-	set(ENUM_REGEX "enum[ \t\n]+${ENUM_NAME}[ \t\n]*{[ \t\n]*([^{}]+)[ \t\n]*}")
+	# Parse the enum
+	set(ENUM_REGEX "enum[ \t\n]+${ENUM_NAME}[ \t\n]*{[ \t\n]*([^{}]*)[ \t\n]*}")
 	if ("${HEADER_CONTENT}" MATCHES ${ENUM_REGEX})
-		set(ENUM_VALUES ${CMAKE_MATCH_1})
+		set(ENUM_BODY ${CMAKE_MATCH_1})
+		string(REGEX MATCHALL "[^\n\r]+" ENUM_BODY ${ENUM_BODY})
+
+		
+		foreach(ENUM_ITEM ${ENUM_BODY})
+			if("${ENUM_ITEM}" MATCHES "([a-zA-Z0-9_]+)")
+				set(ENUM_ITEM_NAME ${CMAKE_MATCH_1})
+
+				string(APPEND ENUM_VALUES "\tpublic static final int ")
+				if("${ENUM_ITEM}" MATCHES "^[ \t\n]*([a-zA-Z0-9_]+[ \t\n]*=[ \t\n]*[a-zA-Z0-9_-]+)")
+					string(APPEND ENUM_VALUES "${CMAKE_MATCH_1}")
+				else()
+					if(ENUM_LAST_ITEM_NAME)
+						string(APPEND ENUM_VALUES "${ENUM_ITEM_NAME} = ${ENUM_LAST_ITEM_NAME}+1")
+					else()
+						string(APPEND ENUM_VALUES "${ENUM_ITEM_NAME} = 0")
+					endif()
+				endif()
+				string(APPEND ENUM_VALUES ";\n")
+
+				set(ENUM_LAST_ITEM_NAME ${ENUM_ITEM_NAME})
+			else()
+				message(WARNING "Unable to parse enum line")
+			endif()
+		endforeach()
+		
+
 		configure_file(
 			${CMAKE_CURRENT_SOURCE_DIR}/cmake/enum.java.in
 			${OUTPUT_FILE}
