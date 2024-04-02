@@ -53,4 +53,14 @@ install(
  	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
+# Install python bindings and resources
+install(
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/python
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/python
+)
+install(
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/resources
+)
+
 add_subdirectory(applications)
