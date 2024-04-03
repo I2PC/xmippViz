@@ -222,6 +222,7 @@ install_jar(
 add_jar(
 	XmippViewer
 	SOURCES ${JAVA_VIEWER_SOURCES}
+	ENTRY_POINT xmipp.viewer.Viewer
 	INCLUDE_JARS 
 		XmippJavaJNI 
 		XmippJavaUtils
