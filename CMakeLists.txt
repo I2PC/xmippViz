@@ -70,7 +70,6 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 			endif()
 		endforeach()
 		
-
 		configure_file(
 			${CMAKE_CURRENT_SOURCE_DIR}/cmake/enum.java.in
 			${OUTPUT_FILE}
@@ -158,18 +157,31 @@ write_java_enum(
 	"ErrorType"
 )
 
+# Extract the ImageJ JAR
+set(IMAGEJ_TAR "${CMAKE_CURRENT_SOURCE_DIR}/external/imagej.tgz")
+set(IMAGEJ_JAR "${CMAKE_CURRENT_SOURCE_DIR}/external/imagej/ij.jar")
+add_custom_command(
+	OUTPUT ${IMAGEJ_JAR}
+	COMMAND ${CMAKE_COMMAND} -E tar -xzf ${IMAGEJ_TAR}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/
+	DEPENDS ${IMAGEJ_TAR}
+	COMMENT "Unpacking ${IMAGEJ_TAR}"
+	VERBATIM
+)
+
 # Create JAVA JNI binding
 add_jar(
 	XmippJavaJNI
-	SOURCES ${JAVA_JNI_SOURCES} ${IJ_LINK}
+	SOURCES ${JAVA_JNI_SOURCES}
 	OUTPUT_NAME XmippJNI
+	INCLUDE_JARS "${IMAGEJ_JAR}"
 )
 
 # Create JAVA utility lib
 add_jar(
 	XmippUtils
-	SOURCES ${JAVA_UTILS_SOURCES} ${IJ_LINK}
-	INCLUDE_JARS XmippJavaJNI
+	SOURCES ${JAVA_UTILS_SOURCES}
+	INCLUDE_JARS XmippJavaJNI "${IMAGEJ_JAR}"
 )
 
 # Create JAVA ImageJ library
