@@ -116,7 +116,11 @@ file(
 	JAVA_VIEWER_SOURCES 
 		${CMAKE_CURRENT_SOURCE_DIR}/java/src/xmipp/viewer/*.java 
 )
-set(IJ_LINK ${CMAKE_CURRENT_SOURCE_DIR}/java/lib/ij.jar)
+file(
+	GLOB_RECURSE 
+	JAVA_JARS 
+		${CMAKE_CURRENT_SOURCE_DIR}/java/lib/*.jar
+)
 
 # Create the shared library
 add_library(XmippJNI SHARED ${JNI_SOURCES})
@@ -169,49 +173,100 @@ add_custom_command(
 	VERBATIM
 )
 
+# Set dependency JARs
+set(COMMONS_CLI_JAR "${CMAKE_CURRENT_SOURCE_DIR}/java/lib/commons-cli-1.1.jar")
+set(COMMONS_CLI_JAR "${CMAKE_CURRENT_SOURCE_DIR}/java/lib/commons-cli-1.1.jar")
+
 # Create JAVA JNI binding
 add_jar(
 	XmippJavaJNI
 	SOURCES ${JAVA_JNI_SOURCES}
 	OUTPUT_NAME XmippJNI
-	INCLUDE_JARS "${IMAGEJ_JAR}"
+	INCLUDE_JARS 
+		${JAVA_JARS}
+		"${IMAGEJ_JAR}"
+)
+install_jar(
+	XmippJavaJNI ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
 )
 
 # Create JAVA utility lib
 add_jar(
-	XmippUtils
+	XmippJavaUtils
 	SOURCES ${JAVA_UTILS_SOURCES}
-	INCLUDE_JARS XmippJavaJNI "${IMAGEJ_JAR}"
+	OUTPUT_NAME XmippUtils
+	INCLUDE_JARS 
+		XmippJavaJNI 
+		${JAVA_JARS}
+		"${IMAGEJ_JAR}"
+)
+install_jar(
+	XmippJavaUtils ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
 )
 
 # Create JAVA ImageJ library
 add_jar(
 	XmippIJ
 	SOURCES ${JAVA_IJ_SOURCES}
-	INCLUDE_JARS XmippJavaUtils
+	INCLUDE_JARS 
+		XmippJavaJNI 
+		XmippJavaUtils
+		${JAVA_JARS}
+		"${IMAGEJ_JAR}"
+)
+install_jar(
+	XmippIJ ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
 )
 
 # Create the viewer
 add_jar(
 	XmippViewer
 	SOURCES ${JAVA_VIEWER_SOURCES}
-	INCLUDE_JARS XmippIJ
+	INCLUDE_JARS 
+		XmippJavaJNI 
+		XmippJavaUtils
+		XmippIJ
+		${JAVA_JARS}
+		"${IMAGEJ_JAR}"
+
+)
+install_jar(
+	XmippViewer ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
 )
 
 # Create the tests
 add_jar(
 	XmippTest
 	SOURCES ${JAVA_TEST_SOURCES}
-	INCLUDE_JARS XmippViewer
+	INCLUDE_JARS 
+		XmippJavaJNI 
+		XmippJavaUtils
+		XmippIJ
+		XmippViewer
+		${JAVA_JARS}
+		"${IMAGEJ_JAR}"
+)
+install_jar(
+	XmippTest ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+)
+
+# Install java libraries
+install(
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/java/lib/
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+)
+install(
+	FILES ${IMAGEJ_JAR}
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
 )
 
 # Install python bindings and resources
 install(
-	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/python
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/python/
 	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/python
 )
 install(
-	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources/
 	DESTINATION ${CMAKE_INSTALL_PREFIX}/resources
 )
 
