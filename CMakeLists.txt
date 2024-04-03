@@ -48,7 +48,7 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 				# Write the item prefix
 				string(APPEND ENUM_VALUES "\tpublic static final int ")
 
-				if("${ENUM_ITEM}" MATCHES "^[ \t\n]*([a-zA-Z0-9_]+[ \t\n]*=[ \t\n]*[a-zA-Z0-9_-]+)")
+				if("${ENUM_ITEM}" MATCHES "^[ \t\n]*([a-zA-Z0-9_]+[ \t\n]*=[ \t\n]*[\\+-]?[a-zA-Z0-9_]+)")
 					# Assignment item. Use it as-is
 					string(APPEND ENUM_VALUES "${CMAKE_MATCH_1}")
 				else()
