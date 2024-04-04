@@ -173,9 +173,7 @@ add_custom_command(
 	VERBATIM
 )
 
-# Set dependency JARs
-set(COMMONS_CLI_JAR "${CMAKE_CURRENT_SOURCE_DIR}/java/lib/commons-cli-1.1.jar")
-set(COMMONS_CLI_JAR "${CMAKE_CURRENT_SOURCE_DIR}/java/lib/commons-cli-1.1.jar")
+set(JAVA_LIB_INSTALL_DIR bindings/java/lib)
 
 # Create JAVA JNI binding
 add_jar(
@@ -187,7 +185,7 @@ add_jar(
 		"${IMAGEJ_JAR}"
 )
 install_jar(
-	XmippJavaJNI ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	XmippJavaJNI ${JAVA_LIB_INSTALL_DIR}
 )
 
 # Create JAVA utility lib
@@ -201,7 +199,7 @@ add_jar(
 		"${IMAGEJ_JAR}"
 )
 install_jar(
-	XmippJavaUtils ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	XmippJavaUtils ${JAVA_LIB_INSTALL_DIR}
 )
 
 # Create JAVA ImageJ library
@@ -215,7 +213,7 @@ add_jar(
 		"${IMAGEJ_JAR}"
 )
 install_jar(
-	XmippIJ ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	XmippIJ ${JAVA_LIB_INSTALL_DIR}
 )
 
 # Create the viewer
@@ -232,7 +230,7 @@ add_jar(
 
 )
 install_jar(
-	XmippViewer ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	XmippViewer ${JAVA_LIB_INSTALL_DIR}
 )
 
 # Create the tests
@@ -248,27 +246,27 @@ add_jar(
 		"${IMAGEJ_JAR}"
 )
 install_jar(
-	XmippTest ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	XmippTest ${JAVA_LIB_INSTALL_DIR}
 )
 
 # Install java libraries
 install(
 	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/java/lib/
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	DESTINATION ${JAVA_LIB_INSTALL_DIR}
 )
 install(
 	FILES ${IMAGEJ_JAR}
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/java/lib
+	DESTINATION ${JAVA_LIB_INSTALL_DIR}
 )
 
 # Install python bindings and resources
 install(
 	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/python/
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/python
+	DESTINATION bindings/python
 )
 install(
 	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources/
-	DESTINATION ${CMAKE_INSTALL_PREFIX}/resources
+	DESTINATION resources
 )
 
 add_subdirectory(applications)
