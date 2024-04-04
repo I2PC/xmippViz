@@ -80,6 +80,24 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 endfunction()
 
 
+
+# Get required header files
+get_target_property(XMIPP_CORE_INCLUDE_DIR XmippCore INTERFACE_INCLUDE_DIRECTORIES)
+find_file(METADATA_LABEL_HEADER NAME "core/metadata_label.h" PATHS ${XMIPP_CORE_INCLUDE_DIR} REQUIRED)
+find_file(ERROR_HEADER NAME "core/xmipp_error.h" PATHS ${XMIPP_CORE_INCLUDE_DIR} REQUIRED)
+
+# Configure files
+write_java_enum(
+	"${METADATA_LABEL_HEADER}"
+	"${CMAKE_CURRENT_SOURCE_DIR}/java/src/xmipp/jni/MDLabel.java"
+	"MDLabel"
+)
+write_java_enum(
+	"${ERROR_HEADER}"
+	"${CMAKE_CURRENT_SOURCE_DIR}/java/src/xmipp/jni/XmippError.java"
+	"ErrorType"
+)
+
 # Find source files
 file(
 	GLOB_RECURSE 
@@ -142,23 +160,6 @@ target_include_directories(
 install(
 	TARGETS XmippJNI
  	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-# Get required header files
-get_target_property(XMIPP_CORE_INCLUDE_DIR XmippCore INTERFACE_INCLUDE_DIRECTORIES)
-find_file(METADATA_LABEL_HEADER NAME "core/metadata_label.h" PATHS ${XMIPP_CORE_INCLUDE_DIR} REQUIRED)
-find_file(ERROR_HEADER NAME "core/xmipp_error.h" PATHS ${XMIPP_CORE_INCLUDE_DIR} REQUIRED)
-
-# Configure files
-write_java_enum(
-	"${METADATA_LABEL_HEADER}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/java/src/xmipp/jni/MDLabel.java"
-	"MDLabel"
-)
-write_java_enum(
-	"${ERROR_HEADER}"
-	"${CMAKE_CURRENT_SOURCE_DIR}/java/src/xmipp/jni/XmippError.java"
-	"ErrorType"
 )
 
 # Extract the ImageJ JAR
