@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 	# Get release full name
-	relaseLine = __getReleaseName("../CHANGELOG.md", "##")
+	relaseLine = __getReleaseName("CHANGELOG.md", "##")
 	fullName = relaseLine.replace("## Release ", "")
 
 	# Print name deppending on argument provided
