@@ -30,8 +30,7 @@ find_package(JNI REQUIRED)
 include(UseJava)
 
 # Save versions for debug
-string(APPEND XMIPP_VERSIONS "Java=${Java_VERSION}\n")
-set(XMIPP_VERSIONS ${XMIPP_VERSIONS} PARENT_SCOPE)
+file(APPEND ${XMIPP_VERSIONS_FILE} "Java=${Java_VERSION}\n")
 
 function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 	get_filename_component(CLASS_NAME ${OUTPUT_FILE} NAME_WE)
