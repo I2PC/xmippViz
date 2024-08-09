@@ -1,0 +1,5 @@
+package xmipp.jni;
+
+public class @CLASS_NAME@ {
+@ENUM_VALUES@
+}
