@@ -45,7 +45,7 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 		string(REGEX MATCHALL "[^\n\r]+" ENUM_BODY ${ENUM_BODY})
 		
 		foreach(ENUM_ITEM ${ENUM_BODY})
-			if("${ENUM_ITEM}" MATCHES "([a-zA-Z0-9_]+)")
+			if("${ENUM_ITEM}" MATCHES "^[ \t\n]*([a-zA-Z0-9_]+)")
 				set(ENUM_ITEM_NAME ${CMAKE_MATCH_1})
 
 				# Write the item prefix
@@ -68,8 +68,8 @@ function(write_java_enum HEADER_FILE OUTPUT_FILE ENUM_NAME)
 
 				# Update the last item name
 				set(ENUM_LAST_ITEM_NAME ${ENUM_ITEM_NAME})
-			else()
-				message(WARNING "Unable to parse enum line")
+			elseif(NOT (${ENUM_ITEM} MATCHES "^[ \t\n]*/"))
+				message(WARNING "Unable to parse enum line: ${ENUM_ITEM}")
 			endif()
 		endforeach()
 		
