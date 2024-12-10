@@ -1,6 +1,7 @@
-## Release 3.XX.YY - TBD
+## Release 3.24.12 - Poseidon
+- New CMake based installer
+- Fixing C to Java enum conversion to consider comments
 
 ## Release 3.22.11 - Nereus
-
-22/July/2021 IMOD MRC file formats added for visualization
+- IMOD MRC file formats added for visualization
 
