@@ -1,4 +1,4 @@
-## Release 3.24.12 - Poseidon
+## Release 3.24.12.0 - Poseidon
 - New CMake based installer
 - Fixing C to Java enum conversion to consider comments
 
