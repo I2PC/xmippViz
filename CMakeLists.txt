@@ -266,7 +266,7 @@ install_jar(
 
 # Install java libraries
 install(
-	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/java/lib/
+	FILES ${JAVA_JARS}
 	DESTINATION ${JAVA_LIB_INSTALL_DIR}
 )
 install(
