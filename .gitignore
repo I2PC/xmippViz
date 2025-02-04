@@ -50,7 +50,6 @@ gmon.out
 /bin
 /lib
 /install/xmipp.conf
-/java/lib/Xmipp*.jar
 /java/build
 /external/imagej
 /bindings/java/src/xmipp/jni/enums.changelog
