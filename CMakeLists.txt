@@ -143,6 +143,17 @@ file(
 		${CMAKE_CURRENT_SOURCE_DIR}/java/lib/*.jar
 )
 
+# Remove JAR files from the old installer
+foreach(JAR_FILE IN LISTS JAVA_JARS)
+	get_filename_component(BASENAME ${JAR_FILE} NAME)
+    if(BASENAME MATCHES "^Xmipp")
+		message(WARNING "${JAR_FILE} is probably from an old installation. Please, consider deleting it.")
+	else()
+        list(APPEND CURATED_JAVA_JARS ${JAR_FILE})
+    endif()
+endforeach()
+set(JAVA_JARS ${CURATED_JAVA_JARS})
+
 # Create the shared library
 add_library(XmippJNI SHARED ${JNI_SOURCES})
 #target_precompile_headers(
