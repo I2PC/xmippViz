@@ -1,7 +1,7 @@
 
-## In progress...elease 3.25.04.0 - xxx
+## Release 3.25.04.0 - Rhea
 - Updated gitignore
-- 
+- Fixing old installation compatibility issue
 
 ## Release 3.24.12.0 - Poseidon
 - New CMake based installer
