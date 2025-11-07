@@ -1,8 +1,9 @@
 name: Release new version
 on:
   push:
-    branches: [ master ]
-
+    branches:
+      - main
+  workflow_dispatch:
 jobs:
   generate-new-release:
     runs-on: ubuntu-latest
