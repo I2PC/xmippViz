@@ -1,5 +1,7 @@
-
-## Release 3.25.04.0 - Rhea
+## Release 26.00.0 
+- New installer
+- 
+# Release 3.25.04.0 - Rhea
 - Updated gitignore
 - Fixing old installation compatibility issue
 
