@@ -1,4 +1,7 @@
 
+## Release 4.0.0
+- New version semantic
+
 ## Release 3.25.04.0 - Rhea
 - Updated gitignore
 - Fixing old installation compatibility issue
