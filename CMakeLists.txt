@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.16)
 include(GNUInstallDirs)
 
 # Find dependencies
-find_package(Java REQUIRED)
+find_package(Java 8 REQUIRED)
 find_package(JNI REQUIRED)
 include(UseJava)
 
