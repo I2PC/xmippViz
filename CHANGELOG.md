@@ -1,6 +1,6 @@
 ## Release 4.0.1
 - Required JAVA 8 or newer
-- 
+  
 ## Release 4.0.0
 - New version semantic
 
