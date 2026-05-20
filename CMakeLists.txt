@@ -25,7 +25,12 @@ cmake_minimum_required(VERSION 3.16)
 include(GNUInstallDirs)
 
 # Find dependencies
-find_package(Java 8 REQUIRED)
+find_package(Java REQUIRED)
+if(Java_VERSION VERSION_LESS "1.8")
+    message(FATAL_ERROR "Java 8 or newer is required")
+endif()
+
+
 find_package(JNI REQUIRED)
 include(UseJava)
 
