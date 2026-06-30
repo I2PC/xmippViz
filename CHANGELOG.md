@@ -1,3 +1,6 @@
+## Release 4.0.2
+- Fix Java version check in CMake to support Java 8 and newer distributions
+  
 ## Release 4.0.1
 - Required JAVA 8 or newer
   
