@@ -632,7 +632,13 @@ public abstract class ImageGalleryTableModel extends AbstractTableModel {
 
 		public Image getImage() {
 			if (image != null)
-				return image.getImage();
+				// Use getBufferedImage() instead of getImage(): on modern JVMs
+				// (JDK 9+/17/21) this old ImageJ build's ImagePlus.getImage()
+				// returns a one-shot sun.awt.image.ToolkitImage backed by a
+				// MemoryImageSource, whose content is consumed by the first draw
+				// and yields a blank cell on every subsequent repaint. A
+				// BufferedImage snapshot stays drawable across repaints.
+				return image.getBufferedImage();
 			return null;
 		}
 
